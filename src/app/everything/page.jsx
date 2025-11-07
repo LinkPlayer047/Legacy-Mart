@@ -1,10 +1,10 @@
-import Home from '@/components/home/Home'
+import Everything from '@/components/everything/Everything'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-      <Home />
+        <Everything />
     </div>
   )
 }
