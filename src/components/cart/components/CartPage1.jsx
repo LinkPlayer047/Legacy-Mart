@@ -33,7 +33,7 @@ const CartPage1 = () => {
       <div className="mycontainer2 flex items-start gap-5 py-10 w-[90%]">
         <div className='w-[70%] bg-white shadow-lg rounded-xl py-5'>
           <div className='flex items-center justify-between px-10'>
-            <h1 className={`text-2xl font-bold transition-opacity duration-700 ${fade ? 'opacity-0' : 'opacity-100'}`}>
+            <h1 className={`text-2xl font-bold transition-opacity duration-700 ${fade ? 'opacity-50' : 'opacity-100'}`}>
               Your Cart
             </h1>
             <h1 className='text-2xl font-bold'>${total.toFixed(2)}</h1>
