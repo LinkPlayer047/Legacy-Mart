@@ -65,7 +65,7 @@ const Qeuries = () => {
           ].map((card, i) => (
             <div
               key={i}
-              className="bg-white rounded-lg flex flex-col items-center text-center gap-2 px-6 py-10 shadow-md hover:shadow-lg transition-shadow"
+              className="bg-white rounded-lg flex flex-col items-center text-center gap-2 px-6 py-10 shadow hover:shadow-lg transition-shadow"
             >
               <h4 className="text-[22px] md:text-[26px] font-semibold text-black">
                 {card.title}
@@ -104,27 +104,27 @@ const Qeuries = () => {
               name="name"
               type="text"
               placeholder="Name"
-              className="border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#0084d6]"
+              className="border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#0084d6]"
               required
             />
             <input
               name="email"
               type="email"
               placeholder="Email"
-              className="border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#0084d6]"
+              className="border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#0084d6]"
               required
             />
             <input
               name="subject"
               type="text"
               placeholder="Subject"
-              className="border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#0084d6]"
+              className="border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#0084d6]"
             />
             <textarea
               name="message"
               rows="6"
               placeholder="Message"
-              className="border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#0084d6]"
+              className="border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#0084d6]"
               required
             ></textarea>
 
@@ -133,7 +133,7 @@ const Qeuries = () => {
               disabled={loading}
               className={`${
                 loading ? "bg-gray-400" : "bg-[#0084d6] hover:bg-[#0075be]"
-              } text-white py-3 px-8 rounded-md font-semibold transition-all`}
+              } text-white py-3 px-8 rounded font-semibold transition-all`}
             >
               {loading ? "Sending..." : "Send Message"}
             </button>
