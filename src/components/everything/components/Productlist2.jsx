@@ -36,7 +36,7 @@ const Productlist2 = () => {
     { id: 12, name: "Black Over The Shoulder HandBag", category: "Women", price: 2000, image: "/14.jpg" },
     { id: 13, name: "Shoes", category: "Men", price: 1700, image: "/shoe.jpg" },
     { id: 14, name: "Stylish Red Footwear", category: "Women", price: 2200, image: "/footwear.jpg" },
-    { id: 15, name: "Shoes 1", category: "Mmen", price: 1500, image: "/shoe2.jpg" },
+    { id: 15, name: "Shoes 1", category: "Men", price: 1500, image: "/shoe2.jpg" },
     
 
     // you can add more products here. If count > PAGE_SIZE they will go to page 2 automatically
