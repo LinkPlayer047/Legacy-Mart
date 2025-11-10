@@ -27,7 +27,7 @@ const Productreviews2 = () => {
       <div className="lg:w-1/2 w-full">
         <h1 className="text-3xl font-semibold text-gray-800 mb-3">{product.name}</h1>
         <p className="text-gray-600 mb-4">{product.category}</p>
-        <h2 className="text-2xl font-bold text-blue-600 mb-6">
+        <h2 className="text-2xl font-bold text-black mb-6">
           ₨ {product.price}
         </h2>
 
@@ -41,7 +41,7 @@ const Productreviews2 = () => {
         </button>
 
         <div className="mt-8">
-          <Link href="/everything" className="text-blue-600 hover:underline">
+          <Link href="/everything" className="hover:text-white hover:bg-gray-600 bg-black text-white px-6 py-3 rounded hover:underline">
             ← Back to Products
           </Link>
         </div>
