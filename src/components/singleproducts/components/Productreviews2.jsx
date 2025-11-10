@@ -13,7 +13,7 @@ const Productreviews2 = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-5 py-16 flex flex-col lg:flex-row gap-10">
+    <div className="max-w-6xl mx-auto px-5 py-16 flex flex-col lg:flex-row gap-10 mt-30">
       {/* Left: Product Image */}
       <div className="lg:w-1/2 w-full">
         <img
