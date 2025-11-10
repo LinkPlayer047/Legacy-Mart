@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import { Lato } from "next/font/google";
+import Link from "next/link";
 export const lato = Lato({ subsets: ["latin"], weight: ["700"] });
 
 const Hero = () => {
@@ -48,16 +49,8 @@ const Hero = () => {
           </h2>
 
           <div className="flex flex-col lg:flex-row items-center lg:gap-5">
-            <button
-              className={`bg-white text-black text-[12.7px] lg:text-[14px] font-semibold mt-10 uppercase py-3 px-7 ${lato.className}`}
-            >
-              Shop Now
-            </button>
-            <button
-              className={`border border-white text-white text-[12.7px] lg:text-[14px] font-semibold mt-10 uppercase py-3 px-7 ${lato.className}`}
-            >
-              Find More
-            </button>
+            <Link href="/shop" className={`bg-white text-black hover:bg-black hover:text-white text-[12.7px] lg:text-[14px] font-semibold mt-10 uppercase py-3 px-7 ${lato.className}`}>Shop Now</Link>
+            <Link href="/shop" className={`border border-white text-white hover:bg-white hover:text-black hover:border-none text-[12.7px] lg:text-[14px] font-semibold mt-10 uppercase py-3 px-7 ${lato.className}`}>Find More</Link>
           </div>
         </div>
         <div className="lg:w-1/2 hidden lg:flex flex-col items-start justify-center"></div>
