@@ -1,5 +1,6 @@
 import React from "react";
 import { Lato } from "next/font/google";
+import Link from "next/link";
 
 export const lato = Lato({ subsets: ["latin"], weight: ["700"] });
 
@@ -29,9 +30,7 @@ const Offer = () => {
             Buy This T-shirt At{" "}
             <span className="fade-in text-white">20% Discount, Use Code OFF20</span>
           </h3>
-          <button className="fade-in bg-white text-black text-sm font-semibold py-3 px-7 uppercase hover:bg-black hover:text-white transition">
-            Shop Now
-          </button>
+          <Link href="/" className="fade-in bg-white text-black text-sm font-semibold py-3 px-7 uppercase hover:bg-black hover:text-white transition">Shop Now</Link>
         </div>
       </div>
     </div>
