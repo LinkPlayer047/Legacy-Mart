@@ -76,6 +76,7 @@ const Productreviews2 = () => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
 
+  // ✅ If product not found
   if (!product) {
     return (
       <div className="py-20 text-center text-gray-500">
@@ -84,16 +85,13 @@ const Productreviews2 = () => {
     );
   }
 
+  // 🖱️ Image Zoom Handler
   const handleMouseMove = (e) => {
     const { left, top, width, height } = imgRef.current.getBoundingClientRect();
     const x = ((e.clientX - left) / width) * 100;
     const y = ((e.clientY - top) / height) * 100;
     setZoomPos({ x, y });
   };
-
-  const price = selectedSize
-    ? product?.sizes?.find((s) => s.label === selectedSize)?.price
-    : "200 – 250";
 
   return (
     <div className="py-20 bg-white">
@@ -207,8 +205,9 @@ const Productreviews2 = () => {
           </div>
         )}
 
-        {/* RIGHT SIDE: Details */}
+        {/* RIGHT SIDE: Product Details */}
         <div className="space-y-4">
+          {/* Breadcrumb */}
           <div className="text-gray-500 text-md flex flex-wrap gap-1 items-center">
             <span
               onClick={() => router.push("/everything")}
@@ -238,57 +237,12 @@ const Productreviews2 = () => {
             {product?.description}
           </p>
 
-          {/* Sizes */}
-          <div className="flex items-center gap-3 mt-6">
-            {product?.sizes?.map((size) => (
-              <button
-                key={size?.label}
-                onClick={() => setSelectedSize(size?.label)}
-                className={`border rounded-sm px-3 py-0.5 text-sm font-semibold ${
-                  selectedSize === size.label
-                    ? "border-gray-800 text-black"
-                    : "border-gray-300 hover:border-gray-500"
-                }`}
-              >
-                {size.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Colors */}
-          <div className="mt-5 border-b border-gray-300 pb-4">
-            <div className="flex flex-col gap-2 mt-4">
-              <div className="flex items-center gap-2">
-                {product?.colors?.map((color) => (
-                  <button
-                    key={color.hex}
-                    onClick={() => setSelectedColor(color.hex)}
-                    className={`w-6 h-6 rounded border-2 ${
-                      selectedColor === color.hex
-                        ? "border-black"
-                        : "border-transparent"
-                    }`}
-                    style={{ backgroundColor: color.hex }}
-                  />
-                ))}
-              </div>
-              <button
-                onClick={() => {
-                  setSelectedColor(null);
-                  setSelectedSize(null);
-                }}
-                className="text-gray-500 text-sm mt-2"
-              >
-                CLEAR
-              </button>
-            </div>
-          </div>
-
           {/* Add to Cart Section */}
           <div className="mt-6 border-b border-gray-300 pb-7">
             <p className="text-2xl font-bold mb-3">₨ {product.price}.00</p>
 
             <div className="flex items-center gap-3">
+              {/* Quantity Selector */}
               <div className="flex border border-gray-300">
                 <button
                   className="px-3 py-2 text-xl"
@@ -309,21 +263,42 @@ const Productreviews2 = () => {
                 </button>
               </div>
 
+              {/* Add to Cart Button */}
               <button
-                disabled={!selectedSize}
-                onClick={() =>
-                  console.log("Add to cart", {
-                    product,
-                    selectedSize,
-                    selectedColor,
-                    quantity,
-                  })
-                }
-                className={`px-6 py-3 rounded-full text-white font-semibold transition ${
-                  selectedSize
-                    ? "bg-[#f0243c] hover:bg-[#ff334b]"
-                    : "bg-[#ff99a5] cursor-not-allowed"
-                }`}
+                onClick={() => {
+                  const storedCart =
+                    JSON.parse(localStorage.getItem("cartItems")) || [];
+                  const existingItem = storedCart.find(
+                    (item) => item.name === product.name
+                  );
+
+                  let updatedCart;
+                  if (existingItem) {
+                    updatedCart = storedCart.map((item) =>
+                      item.name === product.name
+                        ? { ...item, quantity: item.quantity + quantity }
+                        : item
+                    );
+                  } else {
+                    updatedCart = [
+                      ...storedCart,
+                      {
+                        name: product.name,
+                        price: product.price,
+                        category: product.category,
+                        image: product.image,
+                        quantity: quantity,
+                      },
+                    ];
+                  }
+
+                  localStorage.setItem(
+                    "cartItems",
+                    JSON.stringify(updatedCart)
+                  );
+                  router.push("/cart");
+                }}
+                className="px-6 py-3 rounded-full text-white font-semibold transition bg-[#fc001d] hover:bg-[#e51931]"
               >
                 ADD TO CART
               </button>

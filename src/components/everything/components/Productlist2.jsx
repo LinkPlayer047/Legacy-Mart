@@ -3,41 +3,39 @@ import React, { useEffect, useMemo, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import { Lato } from "next/font/google";
-import products from "@/utiles/products";
+import { toast } from "react-toastify";
+import allProducts from "@/utiles/products"; // renamed for clarity
 
 const lato = Lato({ subsets: ["latin"], weight: ["700"] });
 
-const Productlist2 = () => {
-  // UI / behavior state
+const Productlist2 = ({ pageTitle = "Our Products" }) => {
   const [cartItems, setCartItems] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [sortOption, setSortOption] = useState("newest"); // newest, name-asc, price-asc, price-desc
+  const [sortOption, setSortOption] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [priceRange, setPriceRange] = useState([500, 5000]);
+  const [appliedFilters, setAppliedFilters] = useState(null);
 
-  // Page size: 12 products per page (4 rows × 3 cols)
   const PAGE_SIZE = 12;
+  const products = allProducts || [];
 
-  // -------------------------
-  // static product data (you can replace this with data fetched from backend)
-  // -------------------------
-
-  // derive category list from products (unique)
+  // Categories
   const categories = useMemo(() => {
     const set = new Set(products.map((p) => p.category));
     return ["All", ...Array.from(set)];
   }, [products]);
 
-  // -------------------------
-  // Cart logic (localStorage)
-  // -------------------------
+  // Load cart from localStorage
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
     setCartItems(savedCart);
   }, []);
 
+  // Add to cart
   const addToCart = (product) => {
     const updatedCart = [...cartItems];
-    const existingItem = updatedCart.find((item) => item.name === product.name);
+    const existingItem = updatedCart.find((item) => item.id === product.id);
 
     if (existingItem) {
       existingItem.quantity += 1;
@@ -47,111 +45,131 @@ const Productlist2 = () => {
 
     setCartItems(updatedCart);
     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-    // small non-blocking UX feedback (you can replace alert with toast)
-    alert(`${product.name} added to cart! ✅`);
+    toast.success(`${product.name} added to cart!`);
   };
 
-  // -------------------------
-  // Filtering + Sorting logic
-  // -------------------------
-  const filteredAndSorted = useMemo(() => {
-    // 1. filter
-    let list = products;
-    if (selectedCategory !== "All") {
-      list = list.filter((p) => p.category === selectedCategory);
-    }
+  // Apply Filters
+  const applyFilter = () => {
+    setAppliedFilters({
+      category: selectedCategory,
+      search: searchTerm,
+      priceRange,
+      sort: sortOption,
+    });
+    setCurrentPage(1);
+  };
 
-    // 2. sort
-    if (sortOption === "newest") {
-      // assume higher id = newer
-      list = [...list].sort((a, b) => b.id - a.id);
-    } else if (sortOption === "name-asc") {
-      list = [...list].sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortOption === "price-asc") {
-      list = [...list].sort((a, b) => a.price - b.price);
-    } else if (sortOption === "price-desc") {
-      list = [...list].sort((a, b) => b.price - a.price);
-    }
+  // Filter, sort & search logic
+  const filteredAndSorted = useMemo(() => {
+    let list = [...products];
+    if (!appliedFilters) return list;
+
+    const { category, search, priceRange: pr, sort } = appliedFilters;
+
+    if (category !== "All") list = list.filter((p) => p.category === category);
+    list = list.filter((p) => p.price >= pr[0] && p.price <= pr[1]);
+
+    if (search)
+      list = list.filter((p) =>
+        p.name.toLowerCase().includes(search.toLowerCase())
+      );
+
+    if (sort === "newest") list.sort((a, b) => b.id - a.id);
+    if (sort === "name-asc") list.sort((a, b) => a.name.localeCompare(b.name));
+    if (sort === "price-asc") list.sort((a, b) => a.price - b.price);
+    if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
 
     return list;
-  }, [products, selectedCategory, sortOption]);
+  }, [products, appliedFilters]);
 
-  // -------------------------
-  // Pagination logic
-  // -------------------------
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredAndSorted.length / PAGE_SIZE)
-  );
-
-  // If current page becomes invalid (e.g., after filtering), clamp it
+  // Pagination
+  const totalPages = Math.max(1, Math.ceil(filteredAndSorted.length / PAGE_SIZE));
   useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(totalPages);
   }, [currentPage, totalPages]);
 
-  // slice for current page
   const startIndex = (currentPage - 1) * PAGE_SIZE;
   const currentPageProducts = filteredAndSorted.slice(
     startIndex,
     startIndex + PAGE_SIZE
   );
 
-  // helper to go to specific page
   const goToPage = (page) => {
     const p = Math.min(Math.max(1, page), totalPages);
     setCurrentPage(p);
-    // scroll to top of product list (optional)
     window.scrollTo({ top: 200, behavior: "smooth" });
   };
 
-  // If products array changes (e.g., new product added), optionally jump to last page where new item lives:
-  useEffect(() => {
-    // find if last product id > last id of current filtered list; for static array not needed.
-    // if you append product dynamically you can set logic to go to page containing new product
-    // Example: automatically move to last page when products length increases
-    // Uncomment if you want auto-jump on new product additions:
-    // if (products.length > PAGE_SIZE && currentPage === 1) {
-    //   goToPage(Math.ceil(products.length / PAGE_SIZE));
-    // }
-  }, [products]);
-
-  // -------------------------
-  // UI
-  // -------------------------
   return (
-    <div className="bg-[#f5f7f9] py-20">
+    <div className="bg-[#f5f7f9] py-20 pt-40">
       <div
         className={`max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-start justify-between gap-10 px-5 ${lato.className}`}
       >
-        {/* LEFT FILTER SECTION */}
+        {/* LEFT FILTER */}
         <aside className="lg:w-[30%] w-full bg-white rounded-lg shadow-md p-6">
-          {/* Search (optional) */}
-          <div className="flex items-center w-full border border-gray-300 rounded overflow-hidden">
+          {/* Search */}
+          <div className="flex items-center w-full border border-gray-300 rounded overflow-hidden mb-6">
             <input
               type="text"
               placeholder="Search products..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full px-4 py-2 outline-none"
             />
-            <Link href="/everything">
-              <button className="bg-[#0084d6] text-white px-3 py-2 hover:bg-[#0070b3]">
-                <IoIosArrowForward className="text-lg" />
-              </button>
-            </Link>
+            <button
+              className="bg-[#0084d6] text-white px-3 py-2 hover:bg-[#0070b3]"
+              onClick={applyFilter}
+            >
+              <IoIosArrowForward className="text-lg" />
+            </button>
           </div>
 
-          {/* Price filter preview (static visual) */}
+          {/* Price Filter */}
           <div className="pt-6 w-full">
             <h2 className="text-[22px] mb-4 text-gray-800">Filter by Price</h2>
-            <div className="relative w-full h-1 bg-gray-300 rounded-full">
-              <div className="absolute top-0 left-[20%] right-[30%] h-1 bg-[#0084d6] rounded-full"></div>
-              <div className="absolute top-1/2 -translate-y-1/2 left-[20%] w-4 h-4 bg-[#0084d6] rounded-full border-2 border-white shadow"></div>
-              <div className="absolute top-1/2 -translate-y-1/2 right-[30%] w-4 h-4 bg-[#0084d6] rounded-full border-2 border-white shadow"></div>
+
+            <div className="flex gap-2 mb-2">
+              <input
+                type="number"
+                min={500}
+                max={priceRange[1]}
+                value={priceRange[0]}
+                onChange={(e) =>
+                  setPriceRange([Number(e.target.value), priceRange[1]])
+                }
+                className="w-1/2 px-2 py-1 border rounded"
+              />
+              <input
+                type="number"
+                min={priceRange[0]}
+                max={5000}
+                value={priceRange[1]}
+                onChange={(e) =>
+                  setPriceRange([priceRange[0], Number(e.target.value)])
+                }
+                className="w-1/2 px-2 py-1 border rounded"
+              />
             </div>
-            <div className="flex justify-between mt-6 text-gray-700 font-medium">
-              <span>₨ 500</span>
-              <span>₨ 5000</span>
+
+            <input
+              type="range"
+              min={500}
+              max={5000}
+              value={priceRange[1]}
+              onChange={(e) =>
+                setPriceRange([priceRange[0], Number(e.target.value)])
+              }
+              className="w-full"
+            />
+            <div className="flex justify-between mt-2 text-gray-700 font-medium">
+              <span>₨ {priceRange[0]}</span>
+              <span>₨ {priceRange[1]}</span>
             </div>
-            <button className="mt-5 w-full bg-[#0084d6] text-white py-2 rounded hover:bg-[#0070b3] transition">
+
+            <button
+              onClick={applyFilter}
+              className="mt-5 w-full bg-[#0084d6] text-white py-2 rounded hover:bg-[#0070b3] transition"
+            >
               Apply Filter
             </button>
           </div>
@@ -167,7 +185,7 @@ const Productlist2 = () => {
                   key={cat}
                   onClick={() => {
                     setSelectedCategory(cat);
-                    setCurrentPage(1); // reset to first page on category change
+                    applyFilter();
                   }}
                   className={`text-left px-3 py-2 rounded ${
                     selectedCategory === cat
@@ -179,7 +197,7 @@ const Productlist2 = () => {
                     <span className="text-[16px]">{cat}</span>
                     {cat !== "All" && (
                       <span className="text-gray-500">
-                        ( {products.filter((p) => p.category === cat).length} )
+                        ({products.filter((p) => p.category === cat).length})
                       </span>
                     )}
                   </div>
@@ -189,21 +207,19 @@ const Productlist2 = () => {
           </div>
         </aside>
 
-        {/* RIGHT PRODUCTS SECTION */}
+        {/* RIGHT PRODUCTS */}
         <main className="lg:w-[70%] w-full">
-          {/* Header: title + sort */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <h2 className="text-[26px] font-semibold text-gray-900">
-              Our Products
+              {pageTitle}
             </h2>
-
             <div className="flex items-center gap-3">
               <label className="text-sm font-medium text-gray-700">Sort:</label>
               <select
                 value={sortOption}
                 onChange={(e) => {
                   setSortOption(e.target.value);
-                  setCurrentPage(1);
+                  applyFilter();
                 }}
                 className="border rounded px-3 py-2"
               >
@@ -215,62 +231,64 @@ const Productlist2 = () => {
             </div>
           </div>
 
-          {/* Grid */}
-          {/* Grid Layout */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {currentPageProducts.map((product) => (
-              <article
-                key={product.id}
-                className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition"
-              >
-                {/* Clickable area → opens product detail page */}
-                <Link href={`/singleproduct/${product.id}`}>
-                  <div className="relative w-full h-64 cursor-pointer">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="object-cover w-full h-full"
-                    />
-                  </div>
-                </Link>
-
-                {/* Product info */}
-                <div className="p-4 text-center">
-                  {/* Also clickable title → goes to detail page */}
+          {/* Product Grid */}
+          {currentPageProducts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {currentPageProducts.map((product) => (
+                <article
+                  key={product.id}
+                  className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition"
+                >
                   <Link href={`/singleproduct/${product.id}`}>
-                    <h3 className="text-[16px] font-semibold text-gray-800 mb-2 hover:text-[#0084d6] transition">
-                      {product.name}
-                    </h3>
+                    <div className="relative w-full h-64 cursor-pointer">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
                   </Link>
-
-                  <p className="text-gray-500 mb-2">{product.category}</p>
-                  <h4 className="text-[#0084d6] font-bold text-[18px] mb-3">
-                    ₨ {product.price}
-                  </h4>
-
-                  {/* Keep Add to Cart working as before */}
-                  <button
-                    onClick={() => addToCart(product)}
-                    className="bg-[#0084d6] text-white px-5 py-2 rounded hover:bg-[#0070b3] transition"
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
+                  <div className="p-4 text-center">
+                    <Link href={`/singleproduct/${product.id}`}>
+                      <h3 className="text-[16px] font-semibold text-gray-800 mb-2 hover:text-[#0084d6] transition">
+                        {product.name}
+                      </h3>
+                    </Link>
+                    <p className="text-gray-500 mb-2">{product.category}</p>
+                    <h4 className="text-[#0084d6] font-bold text-[18px] mb-3">
+                      ₨ {product.price}
+                    </h4>
+                    <button
+                      onClick={() => addToCart(product)}
+                      className="bg-[#0084d6] text-white px-5 py-2 rounded hover:bg-[#0070b3] transition"
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-gray-600 mt-10">
+              No products found.
+            </p>
+          )}
 
           {/* Pagination */}
           <div className="mt-8 flex items-center justify-between">
             <div className="text-sm text-gray-600">
-              Showing <span className="font-medium">{startIndex + 1}</span> —{" "}
+              Showing{" "}
+              <span className="font-medium">
+                {filteredAndSorted.length === 0 ? 0 : startIndex + 1}
+              </span>{" "}
+              —{" "}
               <span className="font-medium">
                 {Math.min(startIndex + PAGE_SIZE, filteredAndSorted.length)}
               </span>{" "}
-              of <span className="font-medium">{filteredAndSorted.length}</span>{" "}
+              of{" "}
+              <span className="font-medium">{filteredAndSorted.length}</span>{" "}
               products
             </div>
-
             <div className="flex items-center gap-2">
               <button
                 onClick={() => goToPage(currentPage - 1)}
@@ -283,68 +301,21 @@ const Productlist2 = () => {
               >
                 Prev
               </button>
-
-              {/* page numbers - show up to 7 page buttons intelligently */}
               <div className="flex items-center gap-1">
-                {Array.from({ length: totalPages }).map((_, i) => {
-                  const pageNum = i + 1;
-                  // keep UI small: show first, last, current ±1, and dots
-                  if (totalPages > 7) {
-                    if (
-                      pageNum === 1 ||
-                      pageNum === totalPages ||
-                      Math.abs(pageNum - currentPage) <= 1
-                    ) {
-                      return (
-                        <button
-                          key={pageNum}
-                          onClick={() => goToPage(pageNum)}
-                          className={`px-3 py-2 rounded ${
-                            pageNum === currentPage
-                              ? "bg-[#0084d6] text-white"
-                              : "hover:bg-gray-100"
-                          }`}
-                        >
-                          {pageNum}
-                        </button>
-                      );
-                    }
-                    if (pageNum === 2 && currentPage > 3) {
-                      return (
-                        <span key={"dots1"} className="px-2">
-                          …
-                        </span>
-                      );
-                    }
-                    if (
-                      pageNum === totalPages - 1 &&
-                      currentPage < totalPages - 2
-                    ) {
-                      return (
-                        <span key={"dots2"} className="px-2">
-                          …
-                        </span>
-                      );
-                    }
-                    return null;
-                  } else {
-                    return (
-                      <button
-                        key={pageNum}
-                        onClick={() => goToPage(pageNum)}
-                        className={`px-3 py-2 rounded ${
-                          pageNum === currentPage
-                            ? "bg-[#0084d6] text-white"
-                            : "hover:bg-gray-100"
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  }
-                })}
+                {Array.from({ length: totalPages }).map((_, i) => (
+                  <button
+                    key={i + 1}
+                    onClick={() => goToPage(i + 1)}
+                    className={`px-3 py-2 rounded ${
+                      currentPage === i + 1
+                        ? "bg-[#0084d6] text-white"
+                        : "hover:bg-gray-100"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
               </div>
-
               <button
                 onClick={() => goToPage(currentPage + 1)}
                 disabled={currentPage === totalPages}
