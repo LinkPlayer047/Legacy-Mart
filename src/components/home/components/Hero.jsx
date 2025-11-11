@@ -49,8 +49,8 @@ const Hero = () => {
           </h2>
 
           <div className="flex flex-col lg:flex-row items-center lg:gap-5">
-            <Link href="/shop" className={`bg-white text-black hover:bg-black hover:text-white text-[12.7px] lg:text-[14px] font-semibold mt-10 uppercase py-3 px-7 ${lato.className}`}>Shop Now</Link>
-            <Link href="/shop" className={`border border-white text-white hover:bg-white hover:text-black hover:border-none text-[12.7px] lg:text-[14px] font-semibold mt-10 uppercase py-3 px-7 ${lato.className}`}>Find More</Link>
+            <Link href="/everything" className={`bg-white text-black hover:bg-black hover:text-white text-[12.7px] lg:text-[14px] font-semibold mt-10 uppercase py-3 px-7 ${lato.className}`}>Shop Now</Link>
+            <Link href="/everything" className={`border border-white text-white hover:bg-white hover:text-black hover:border-none text-[12.7px] lg:text-[14px] font-semibold mt-10 uppercase py-3 px-7 ${lato.className}`}>Find More</Link>
           </div>
         </div>
         <div className="lg:w-1/2 hidden lg:flex flex-col items-start justify-center"></div>

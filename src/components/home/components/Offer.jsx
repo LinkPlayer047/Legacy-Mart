@@ -30,7 +30,7 @@ const Offer = () => {
             Buy This T-shirt At{" "}
             <span className="fade-in text-white">20% Discount, Use Code OFF20</span>
           </h3>
-          <Link href="/" className="fade-in bg-white text-black text-sm font-semibold py-3 px-7 uppercase hover:bg-black hover:text-white transition">Shop Now</Link>
+          <Link href="/everything" className="fade-in bg-white text-black text-sm font-semibold py-3 px-7 uppercase hover:bg-black hover:text-white transition">Shop Now</Link>
         </div>
       </div>
     </div>

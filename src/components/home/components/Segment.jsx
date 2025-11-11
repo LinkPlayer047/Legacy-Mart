@@ -17,7 +17,7 @@ const Segment = () => {
           <p className="text-[16px] mb-3">Discover the latest trends and timeless pieces.</p>
           <div>
           <Link
-            href="/"
+            href="/category/women"
             className="bg-white text-black text-[16px] py-3 px-7 hover:text-white hover:bg-black transition-all duration-300"
           >
             Shop Now
@@ -35,7 +35,7 @@ const Segment = () => {
           <p className="text-[16px] mb-3">Upgrade your wardrobe with modern styles.</p>
           <div>
           <Link
-            href="/"
+            href="/category/men"
             className="bg-white text-black text-[16px] py-3 px-7 hover:text-white hover:bg-black transition-all duration-300"
           >
             Shop Now
@@ -53,7 +53,7 @@ const Segment = () => {
           <p className="text-[16px] mb-3">Step into comfort and style with premium footwear.</p>
           <div>
           <Link
-            href="/"
+            href="/category/accessories"
             className="bg-white text-black text-[16px] py-3 px-7 hover:text-white hover:bg-black transition-all duration-300"
           >
             Shop Now

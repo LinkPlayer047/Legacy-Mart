@@ -1,8 +1,83 @@
+"use client"; // if you use Next.js 13 app directory and want client component
 import React from "react";
+import Link from "next/link";
 import { Lato } from "next/font/google";
 import { CiStar } from "react-icons/ci";
 
 export const lato = Lato({ subsets: ["latin"], weight: ["700"] });
+
+const productList = [
+  {
+    id: "dnk-yellow-shoes",
+    image: "/shoe.jpg",
+    name: "DNK Yellow Shoes",
+    category: "Men",
+    price: 100,
+  },
+  {
+    id: "blue-sneakers",
+    image: "/shoe2.jpg",
+    name: "Blue Sneakers",
+    category: "Men",
+    price: 120,
+  },
+  {
+    id: "women-jacket",
+    image: "/3.jpg",
+    name: "Women Jacket",
+    category: "Women",
+    price: 150,
+  },
+  {
+    id: "leather-handbag",
+    image: "/4.jpg",
+    name: "Leather Handbag",
+    category: "Accessories",
+    price: 90,
+  },
+  {
+    id: "casual-shirt",
+    image: "/5.jpg",
+    name: "Casual Shirt",
+    category: "Men",
+    price: 60,
+  },
+  {
+    id: "stylish-heels",
+    image: "/6.jpg",
+    name: "Stylish Heels",
+    category: "Women",
+    price: 130,
+  },
+  {
+    id: "denim-jeans",
+    image: "/7.jpg",
+    name: "Denim Jeans",
+    category: "Men",
+    price: 80,
+  },
+  {
+    id: "summer-dress",
+    image: "/8.jpg",
+    name: "Summer Dress",
+    category: "Women",
+    price: 110,
+  },
+  {
+    id: "wrist-watch",
+    image: "/9.jpg",
+    name: "Wrist Watch",
+    category: "Accessories",
+    price: 140,
+  },
+  {
+    id: "running-shoes",
+    image: "/10.jpg",
+    name: "Running Shoes",
+    category: "Unisex",
+    price: 95,
+  },
+];
 
 const Products = () => {
   return (
@@ -15,186 +90,34 @@ const Products = () => {
       <div className="border border-[#0084d6] w-[7%] mt-5 mb-10"></div>
 
       <div className="mycontainer grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        <div className="bg-white p-3 rounded-lg shadow hover:shadow-lg transition duration-300">
-          <img
-            src="/shoe.jpg"
-            alt=""
-            className="w-full h-56 object-cover rounded-md mb-3"
-          />
-          <h2 className="text-[16px] font-semibold text-black">
-            DNK Yellow Shoes
-          </h2>
-          <p className="text-gray-500 text-sm">Men</p>
-          <h3 className="text-black font-bold">$100</h3>
-          <div className="flex text-black mt-1">
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-          </div>
-        </div>
-        <div className="bg-white p-3 rounded-lg shadow hover:shadow-lg transition duration-300">
-          <img
-            src="/shoe2.jpg"
-            alt=""
-            className="w-full h-56 object-cover rounded-md mb-3"
-          />
-          <h2 className="text-[16px] font-semibold text-black">
-            Blue Sneakers
-          </h2>
-          <p className="text-gray-500 text-sm">Men</p>
-          <h3 className="text-black font-bold">$120</h3>
-          <div className="flex text-black mt-1">
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-          </div>
-        </div>
-        <div className="bg-white p-3 rounded-lg shadow hover:shadow-lg transition duration-300">
-          <img
-            src="/3.jpg"
-            alt=""
-            className="w-full h-56 object-cover rounded-md mb-3"
-          />
-          <h2 className="text-[16px] font-semibold text-black">Women Jacket</h2>
-          <p className="text-gray-500 text-sm">Women</p>
-          <h3 className="text-black font-bold">$150</h3>
-          <div className="flex text-black mt-1">
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-          </div>
-        </div>
-        <div className="bg-white p-3 rounded-lg shadow hover:shadow-lg transition duration-300">
-          <img
-            src="/4.jpg"
-            alt=""
-            className="w-full h-56 object-cover rounded-md mb-3"
-          />
-          <h2 className="text-[16px] font-semibold text-black">
-            Leather Handbag
-          </h2>
-          <p className="text-gray-500 text-sm">Accessories</p>
-          <h3 className="text-black font-bold">$90</h3>
-          <div className="flex text-black mt-1">
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-          </div>
-        </div>
-        <div className="bg-white p-3 rounded-lg shadow hover:shadow-lg transition duration-300">
-          <img
-            src="/5.jpg"
-            alt=""
-            className="w-full h-56 object-cover rounded-md mb-3"
-          />
-          <h2 className="text-[16px] font-semibold text-black">Casual Shirt</h2>
-          <p className="text-gray-500 text-sm">Men</p>
-          <h3 className="text-black font-bold">$60</h3>
-          <div className="flex text-black mt-1">
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-          </div>
-        </div>
-        <div className="bg-white p-3 rounded-lg shadow hover:shadow-lg transition duration-300">
-          <img
-            src="/6.jpg"
-            alt=""
-            className="w-full h-56 object-cover rounded-md mb-3"
-          />
-          <h2 className="text-[16px] font-semibold text-black">
-            Stylish Heels
-          </h2>
-          <p className="text-gray-500 text-sm">Women</p>
-          <h3 className="text-black font-bold">$130</h3>
-          <div className="flex text-black mt-1">
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-          </div>
-        </div>
-        <div className="bg-white p-3 rounded-lg shadow hover:shadow-lg transition duration-300">
-          <img
-            src="/7.jpg"
-            alt=""
-            className="w-full h-56 object-cover rounded-md mb-3"
-          />
-          <h2 className="text-[16px] font-semibold text-black">Denim Jeans</h2>
-          <p className="text-gray-500 text-sm">Men</p>
-          <h3 className="text-black font-bold">$80</h3>
-          <div className="flex text-black mt-1">
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-          </div>
-        </div>
-        <div className="bg-white p-3 rounded-lg shadow hover:shadow-lg transition duration-300">
-          <img
-            src="/8.jpg"
-            alt=""
-            className="w-full h-56 object-cover rounded-md mb-3"
-          />
-          <h2 className="text-[16px] font-semibold text-black">Summer Dress</h2>
-          <p className="text-gray-500 text-sm">Women</p>
-          <h3 className="text-black font-bold">$110</h3>
-          <div className="flex text-black mt-1">
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-          </div>
-        </div>
-        <div className="bg-white p-3 rounded-lg shadow hover:shadow-lg transition duration-300">
-          <img
-            src="/9.jpg"
-            alt=""
-            className="w-full h-56 object-cover rounded-md mb-3"
-          />
-          <h2 className="text-[16px] font-semibold text-black">Wrist Watch</h2>
-          <p className="text-gray-500 text-sm">Accessories</p>
-          <h3 className="text-black font-bold">$140</h3>
-          <div className="flex text-black mt-1">
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-          </div>
-        </div>
-        <div className="bg-white p-3 rounded-lg shadow hover:shadow-lg transition duration-300">
-          <img
-            src="/10.jpg"
-            alt=""
-            className="w-full h-56 object-cover rounded-md mb-3"
-          />
-          <h2 className="text-[16px] font-semibold text-black">
-            Running Shoes
-          </h2>
-          <p className="text-gray-500 text-sm">Unisex</p>
-          <h3 className="text-black font-bold">$95</h3>
-          <div className="flex text-black mt-1">
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-            <CiStar />
-          </div>
-        </div>
+        {productList.map((product) => (
+          <Link
+            key={product.id}
+            href={`/product/${product.id}`}
+            passHref
+            className="bg-white p-3 rounded-lg shadow hover:shadow-lg transition duration-300 cursor-pointer"
+          >
+            <div>
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-56 object-cover rounded-md mb-3"
+              />
+              <h2 className="text-[16px] font-semibold text-black">
+                {product.name}
+              </h2>
+              <p className="text-gray-500 text-sm">{product.category}</p>
+              <h3 className="text-black font-bold">${product.price}</h3>
+              <div className="flex text-black mt-1">
+                <CiStar />
+                <CiStar />
+                <CiStar />
+                <CiStar />
+                <CiStar />
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   );
