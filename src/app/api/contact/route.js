@@ -59,13 +59,7 @@ export async function POST(req) {
       from: email,
       to: process.env.RECEIVER_EMAIL, 
       subject: `New Query from ${name} - ${subject}`,
-      text: `
-Name: ${name}
-Email: ${email}
-Subject: ${subject}
-Message:
-${message}
-      `,
+      text: `Name: ${name} Email: ${email} Subject: ${subject} Message:${message}`,
     };
 
     await transporter.sendMail(mailOptions);

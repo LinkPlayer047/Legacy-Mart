@@ -50,7 +50,6 @@ const Dashboard = () => {
 
   return (
     <div className="flex pt-30 min-h-screen bg-gray-100 relative">
-      {/* Sidebar */}
       <aside
         className={`fixed md:static top-0 left-0 h-full w-64 bg-white shadow-md flex flex-col transition-transform z-40
         ${
@@ -86,7 +85,6 @@ const Dashboard = () => {
         </button>
       </aside>
 
-      {/* Overlay for mobile blur */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 backdrop-blur-sm z-30 md:hidden"
@@ -94,9 +92,7 @@ const Dashboard = () => {
         ></div>
       )}
 
-      {/* Main Content */}
       <main className="flex-1 p-6 md:p-10 ml-0 md:ml-64">
-        {/* Mobile header with hamburger on right */}
         <div className="flex items-center justify-between md:hidden mb-6">
           <h1 className="text-2xl font-bold">Welcome, {user.name}!</h1>
           <button
@@ -107,13 +103,11 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* Desktop welcome */}
         <h1 className="hidden md:block text-3xl font-bold mb-6">
           Welcome, {user.name}!
         </h1>
         <p className="text-gray-700 mb-10">Email: {user.email}</p>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
             <div className="flex items-center justify-between mb-4">
@@ -140,7 +134,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Recent Activities */}
         <div className="mt-10 bg-white p-6 rounded-lg shadow">
           <h2 className="text-2xl font-semibold mb-4">Recent Activities</h2>
           <ul className="divide-y divide-gray-200">

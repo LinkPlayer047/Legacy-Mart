@@ -20,7 +20,6 @@ export async function POST(request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000);
 
     const user = new User({
@@ -33,7 +32,6 @@ export async function POST(request) {
 
     await user.save();
 
-    // Send OTP email
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {

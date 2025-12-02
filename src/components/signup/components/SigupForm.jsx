@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const SignupForm = () => {
   const router = useRouter();
-  const [step, setStep] = useState(1); // 1: signup, 2: otp
+  const [step, setStep] = useState(1);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,10 +27,10 @@ const SignupForm = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        toast.success(data.message); // success toast
-        setStep(2); // move to OTP step
+        toast.success(data.message);
+        setStep(2);
       } else {
-        toast.error(data.error); // error toast
+        toast.error(data.error);
       }
     } catch (err) {
       console.error(err);
@@ -51,10 +51,10 @@ const SignupForm = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        toast.success("Email verified! Please login."); // success toast
-        router.push("/login"); // redirect after OTP
+        toast.success("Email verified! Please login.");
+        router.push("/login");
       } else {
-        toast.error(data.error); // error toast
+        toast.error(data.error); 
       }
     } catch (err) {
       console.error(err);

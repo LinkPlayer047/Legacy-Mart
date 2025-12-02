@@ -6,12 +6,11 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
   try {
-    // DB connect
     await connectToDB();
 
     const { email, password } = await request.json();
 
-    console.log("Login attempt:", email); // Debug log
+    console.log("Login attempt:", email);
 
     if (!email || !password) {
       return NextResponse.json(
@@ -29,7 +28,7 @@ export async function POST(request) {
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("Password match:", isMatch); // Debug log
+    console.log("Password match:", isMatch);
     if (!isMatch) {
       return NextResponse.json(
         { error: "Invalid credentials" },
@@ -57,7 +56,7 @@ export async function POST(request) {
       user: { name: user.name, email: user.email },
     });
   } catch (error) {
-    console.error("Login error:", error); // Real error log
+    console.error("Login error:", error);
     return NextResponse.json({ error: "Login failed" }, { status: 500 });
   }
 }

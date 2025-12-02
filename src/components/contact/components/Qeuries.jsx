@@ -1,43 +1,48 @@
 "use client";
 import React, { useState } from "react";
 import { Lato } from "next/font/google";
+import { toast } from "react-toastify";
 
 export const lato = Lato({ subsets: ["latin"], weight: ["700"] });
 
 const Qeuries = () => {
   const [loading, setLoading] = useState(false);
 
-  // Handle form submit
+  
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
 
-    const formData = {
-      name: e.target.name.value,
-      email: e.target.email.value,
-      subject: e.target.subject.value,
-      message: e.target.message.value,
-    };
-
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (res.ok) {
-        alert("✅ Message sent successfully!");
-        e.target.reset();
-      } else {
-        alert("❌ Something went wrong, please try again.");
-      }
-    } catch (error) {
-      alert("⚠️ Server error: " + error.message);
-    } finally {
-      setLoading(false);
-    }
+  const formData = {
+    name: e.target.name.value,
+    email: e.target.email.value,
+    subject: e.target.subject.value,
+    message: e.target.message.value,
   };
+
+  try {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await res.json(); 
+
+    if (res.ok) {
+      localStorage.setItem("token", data.token);
+      toast.success("✅ Message sent successfully!");
+      e.target.reset();
+    } else {
+      toast.error(data.message || "❌ Something went wrong, please try again.");
+    }
+  } catch (error) {
+    toast.error("❌ Something went wrong!");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <section

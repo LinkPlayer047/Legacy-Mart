@@ -7,7 +7,7 @@ export function verifyToken(request) {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return decoded; // user info
+    return decoded;
   } catch (err) {
     return NextResponse.json({ error: "Invalid token" }, { status: 401 });
   }
