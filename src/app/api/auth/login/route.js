@@ -20,7 +20,6 @@ export async function POST(request) {
       );
     }
 
-    // Check user exists
     const user = await User.findOne({ email });
     if (!user) {
       return NextResponse.json(
@@ -29,7 +28,6 @@ export async function POST(request) {
       );
     }
 
-    // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     console.log("Password match:", isMatch); // Debug log
     if (!isMatch) {
@@ -39,7 +37,6 @@ export async function POST(request) {
       );
     }
 
-    // JWT token generate
     if (!process.env.JWT_SECRET) {
       console.error("JWT_SECRET not defined in .env.local");
       return NextResponse.json(
