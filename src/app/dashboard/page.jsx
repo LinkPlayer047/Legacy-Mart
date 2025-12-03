@@ -75,7 +75,7 @@ const Dashboard = () => {
         </nav>
         <button
           onClick={() => {
-            localStorage.removeItem("token");
+            localStorage.setItem("isLoggedIn", "false");
             toast.success("Logged out successfully");
             router.push("/login");
           }}

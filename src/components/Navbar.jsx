@@ -209,7 +209,13 @@ const Navbar = () => {
               <Link href={'/about'} className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>About</Link>
               <Link href={'/contact'} className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>Contact</Link>
               <Link href={'/cart'} className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>Cart</Link>
-              <Link href={'/login'} className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>Login</Link>
+              {/* Dynamic Login/Dashboard Button */}
+              <button
+                onClick={handleAccountClick}
+                className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
+              >
+                {isLoggedIn ? "Dashboard" : "Login"}
+              </button>
             </div>
           )}
         </div>
