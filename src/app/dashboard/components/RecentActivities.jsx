@@ -1,14 +1,19 @@
-const RecentActivities = ({ activities }) => (
-  <div className="bg-white shadow-md rounded-md p-5">
-    <h3 className="text-lg font-semibold mb-3">Recent Activities</h3>
-    <ul className="space-y-2">
-      {activities.map((act, i) => (
-        <li key={i} className="flex justify-between">
-          <span>{act.message}</span>
-          <span className="text-gray-500 text-sm">{act.timeAgo}</span>
-        </li>
-      ))}
-    </ul>
-  </div>
-);
+import React from "react";
+
+const RecentActivities = ({ orders }) => {
+  return (
+    <div className="mt-10 bg-white p-6 rounded-lg shadow">
+      <h2 className="text-2xl font-semibold mb-4">Recent Activities</h2>
+      <ul className="divide-y divide-gray-200">
+        {orders.slice(-5).reverse().map((order) => (
+          <li key={order._id} className="py-3 flex justify-between">
+            <span>Order #{order._id} {order.status}</span>
+            <span className="text-gray-500">{new Date(order.createdAt).toLocaleString()}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
 export default RecentActivities;
