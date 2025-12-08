@@ -29,8 +29,6 @@ const Womenproducts2 = () => {
     { id: 5, name: "Stylish Red Footwear", category: "Women", price: 2200, image: "/footwear.jpg" },
     
 
-    // you can add more products here. If count > PAGE_SIZE they will go to page 2 automatically
-    // { id: 13, name: "New Product", category: "Men", price: 2200, image: "/new.jpg" },
   ];
 
   // derive category list from products (unique)
@@ -59,7 +57,6 @@ const Womenproducts2 = () => {
 
     setCartItems(updatedCart);
     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-    // small non-blocking UX feedback (you can replace alert with toast)
     alert(`${product.name} added to cart! ✅`);
   };
 

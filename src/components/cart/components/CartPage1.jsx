@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 
 const CartPage1 = () => {
@@ -49,6 +50,7 @@ const CartPage1 = () => {
   return (
     <div className="bg-[#f5f7f9] py-20 pt-40 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="mycontainer flex flex-col md:flex-row items-start gap-5 w-full max-w-6xl">
+        {/* Cart Items Section */}
         <div className="w-full md:w-2/3 bg-white shadow-lg rounded-xl py-5 px-6 md:px-10">
           <div className="flex items-center justify-between px-0 md:px-0">
             <h1 className="text-2xl font-bold">Your Cart</h1>
@@ -85,8 +87,11 @@ const CartPage1 = () => {
                       </button>
                     </div>
                   </div>
+
                   <div className="flex flex-col items-start sm:items-end mt-3 sm:mt-0">
-                    <p className="font-semibold">₨ {item.price * item.quantity}</p>
+                    <p className="font-semibold">
+                      ₨ {item.price * item.quantity}
+                    </p>
                     <button
                       onClick={() => removeItem(item.name)}
                       className="text-red-500 text-sm mt-1 hover:underline"
@@ -100,6 +105,7 @@ const CartPage1 = () => {
           </div>
         </div>
 
+        {/* Order Summary Section */}
         <div className="w-full md:w-1/3 bg-white shadow-lg rounded-xl py-5 px-6 mt-6 md:mt-0">
           <h2 className="text-xl font-bold mb-4">Order Summary</h2>
           <div className="flex justify-between mb-2">
