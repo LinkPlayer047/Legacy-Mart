@@ -122,15 +122,6 @@ const CartPage = ({ cartItems }) => (
   </div>
 );
 
-const ProfilePage = ({ user }) => (
-  <div className="bg-white p-6 rounded-lg shadow">
-    <h2 className="text-2xl font-semibold mb-4">Profile</h2>
-    <p>Name: {user.name}</p>
-    <p>Email: {user.email}</p>
-    {/* Add edit form if needed */}
-  </div>
-);
-
 const Dashboard = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
@@ -141,16 +132,19 @@ const Dashboard = () => {
   const [activePage, setActivePage] = useState("dashboard");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("Please login first!");
-      router.push("/login");
-    } else {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      setUser(payload);
-      fetchOrders(token);
-      fetchWishlist(token);
-      fetchCart(token);
+    // Browser-only check
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Please login first!");
+        router.push("/login");
+      } else {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        setUser(payload);
+        fetchOrders(token);
+        fetchWishlist(token);
+        fetchCart(token);
+      }
     }
   }, [router]);
 
@@ -235,7 +229,9 @@ const Dashboard = () => {
         </nav>
         <button
           onClick={() => {
-            localStorage.setItem("isLoggedIn", "false");
+            if (typeof window !== "undefined") {
+              localStorage.setItem("isLoggedIn", "false");
+            }
             toast.success("Logged out successfully");
             router.push("/login");
           }}
@@ -279,7 +275,13 @@ const Dashboard = () => {
         {activePage === "orders" && <OrdersPage orders={orders} />}
         {activePage === "wishlist" && <WishlistPage wishlist={wishlist} />}
         {activePage === "cart" && <CartPage cartItems={cartItems} />}
-        {activePage === "profile" && (<ProfileForm user={user} token={localStorage.getItem("token")} setUser={setUser} />)}
+        {activePage === "profile" && (
+          <ProfileForm
+            user={user}
+            token={typeof window !== "undefined" ? localStorage.getItem("token") : ""}
+            setUser={setUser}
+          />
+        )}
       </main>
     </div>
   );
