@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "start": "next start"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
     "@react-icons/all-files": "^4.1.0",
@@ -26,10 +26,10 @@
     "react-toastify": "^11.0.5"
   },
   "devDependencies": {
-  "@tailwindcss/postcss": "^4",
-  "babel-plugin-react-compiler": "1.0.0",
-  "eslint": "8.57.0",
-  "eslint-config-next": "14.2.3",
-  "tailwindcss": "^4"
+    "@tailwindcss/postcss": "^4",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.3",
+    "tailwindcss": "^4"
   }
 }
