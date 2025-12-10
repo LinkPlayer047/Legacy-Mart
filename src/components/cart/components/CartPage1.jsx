@@ -7,7 +7,10 @@ const CartPage1 = () => {
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+    // Client-side pe hi localStorage access hoga
+    const storedCart = typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("cartItems")) || []
+      : [];
     setCartItems(storedCart);
     updateTotal(storedCart);
   }, []);
@@ -23,7 +26,9 @@ const CartPage1 = () => {
   const removeItem = (name) => {
     const updatedCart = cartItems.filter((item) => item.name !== name);
     setCartItems(updatedCart);
-    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    }
     updateTotal(updatedCart);
   };
 
@@ -32,7 +37,9 @@ const CartPage1 = () => {
       item.name === name ? { ...item, quantity: item.quantity + 1 } : item
     );
     setCartItems(updatedCart);
-    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    }
     updateTotal(updatedCart);
   };
 
@@ -43,7 +50,9 @@ const CartPage1 = () => {
         : item
     );
     setCartItems(updatedCart);
-    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    }
     updateTotal(updatedCart);
   };
 

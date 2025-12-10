@@ -4,19 +4,29 @@ import { toast } from "react-toastify";
 
 const WishlistPage = () => {
   const [wishlist, setWishlist] = useState([]);
-  const token = localStorage.getItem("token");
+  const [token, setToken] = useState(null); // token ko state me store karenge
 
-  useEffect(() => fetchWishlist(), []);
+  useEffect(() => {
+    // Client-side pe hi localStorage access hoga
+    const storedToken = localStorage.getItem("token");
+    setToken(storedToken);
 
-  const fetchWishlist = async () => {
+    if (storedToken) {
+      fetchWishlist(storedToken);
+    }
+  }, []);
+
+  const fetchWishlist = async (authToken) => {
     const res = await fetch("/api/wishlist", {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${authToken}` },
     });
     const data = await res.json();
     if (res.ok) setWishlist(data.items);
   };
 
   const removeItem = async (id) => {
+    if (!token) return toast.error("User not authenticated");
+
     const res = await fetch("/api/wishlist", {
       method: "DELETE",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -25,7 +35,7 @@ const WishlistPage = () => {
     const data = await res.json();
     if (res.ok) {
       toast.success("Removed from wishlist");
-      fetchWishlist();
+      fetchWishlist(token);
     } else toast.error(data.error || "Remove failed");
   };
 
@@ -36,7 +46,12 @@ const WishlistPage = () => {
         {wishlist.map(item => (
           <li key={item._id} className="py-3 flex justify-between items-center">
             <span>{item.name}</span>
-            <button className="bg-red-500 text-white p-2 rounded hover:bg-red-600" onClick={() => removeItem(item._id)}>Remove</button>
+            <button
+              className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
+              onClick={() => removeItem(item._id)}
+            >
+              Remove
+            </button>
           </li>
         ))}
       </ul>
