@@ -1,19 +1,22 @@
-import dbConnect from "@/lib/db";
-import Admin from "@/models/admin";
+import dbConnect from "@/lib/dbConnect";
+import Admin from "@/models/Admin";
 import bcrypt from "bcryptjs";
 
-export default async function handler(req, res) {
+export async function GET() {
   await dbConnect();
-  const existing = await Admin.findOne({ email: "admin@example.com" });
-  if (existing) return res.status(200).json({ message: "Admin already exists" });
 
-  const hashedPassword = await bcrypt.hash("Admin@123", 10);
+  const exists = await Admin.findOne({ email: "admin@example.com" });
+  if (exists) {
+    return new Response("Admin already exists");
+  }
 
-  const admin = await Admin.create({
-    username: "Admin",
+  const hashed = await bcrypt.hash("Admin@123", 10);
+
+  await Admin.create({
     email: "admin@example.com",
-    password: hashedPassword
+    password: hashed,
+    role: "admin",
   });
 
-  res.status(201).json({ message: "Admin created", admin });
+  return new Response("Admin Created Successfully!");
 }
