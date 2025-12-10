@@ -1,7 +1,7 @@
 import connectToDB from "@/lib/db";
 import Product from "@/models/products";
 
-const allowedOrigin = "http://localhost:3000"; // frontend ka URL
+const allowedOrigin = "https://legacy-mart-ap.vercel.app/"; // frontend ka URL
 
 function corsHeaders() {
   return {
