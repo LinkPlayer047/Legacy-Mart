@@ -3,19 +3,39 @@ import Admin from "@/models/admin";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": "https://legacy-mart-ap.vercel.app",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  });
+}
+
 export async function POST(req) {
   await dbConnect();
-
   const { email, password } = await req.json();
 
   const admin = await Admin.findOne({ email });
   if (!admin) {
-    return new Response(JSON.stringify({ message: "Admin not found" }), { status: 401 });
+    return new Response(JSON.stringify({ message: "Admin not found" }), {
+      status: 401,
+      headers: {
+        "Access-Control-Allow-Origin": "https://legacy-mart-ap.vercel.app",
+      },
+    });
   }
 
   const isMatch = await bcrypt.compare(password, admin.password);
   if (!isMatch) {
-    return new Response(JSON.stringify({ message: "Wrong password" }), { status: 401 });
+    return new Response(JSON.stringify({ message: "Invalid password" }), {
+      status: 401,
+      headers: {
+        "Access-Control-Allow-Origin": "https://legacy-mart-ap.vercel.app",
+      },
+    });
   }
 
   const token = jwt.sign(
@@ -24,5 +44,10 @@ export async function POST(req) {
     { expiresIn: "1d" }
   );
 
-  return new Response(JSON.stringify({ token }), { status: 200 });
+  return new Response(JSON.stringify({ token }), {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "https://legacy-mart-ap.vercel.app",
+    },
+  });
 }
