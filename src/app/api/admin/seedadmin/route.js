@@ -1,5 +1,5 @@
-import dbConnect from "@/lib/dbConnect";
-import Admin from "@/models/Admin";
+import dbConnect from "@/lib/db";
+import Admin from "@/models/admin";
 import bcrypt from "bcryptjs";
 
 export async function GET() {
