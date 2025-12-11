@@ -1,7 +1,7 @@
 import connectToDB from "@/lib/db";
 import Product from "@/models/products";
 
-const allowedOrigin = "https://legacy-mart-ap.vercel.app/";
+const allowedOrigin = "https://legacy-mart-ap.vercel.app";
 
 function corsHeaders() {
   return {
