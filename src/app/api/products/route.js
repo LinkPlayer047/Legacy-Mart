@@ -1,8 +1,5 @@
 import connectToDB from "@/lib/db";
 import Product from "@/models/products";
-import cloudinary from "@/lib/cloudinary";
-import fs from "fs";
-import path from "path";
 
 const allowedOrigin = "https://legacy-mart-ap.vercel.app";
 
@@ -14,6 +11,7 @@ function corsHeaders() {
   };
 }
 
+// CORS preflight
 export async function OPTIONS() {
   return new Response(null, { headers: corsHeaders() });
 }
@@ -29,38 +27,11 @@ export async function GET() {
   }
 }
 
-// POST add new product (Cloudinary + local fallback)
+// POST add new product
 export async function POST(req) {
   try {
     await connectToDB();
-    const data = await req.formData();
-    const file = data.get("image");
-
-    let imageUrl = "";
-
-    if (file) {
-      try {
-        // Cloudinary upload
-        const uploadedImage = await cloudinary.uploader.upload(file.path, { folder: "products" });
-        imageUrl = uploadedImage.secure_url;
-      } catch (err) {
-        // Local fallback if Cloudinary fails
-        const uploadDir = path.join(process.cwd(), "public/upload");
-        if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-        const fileName = Date.now() + "-" + file.name;
-        const filePath = path.join(uploadDir, fileName);
-        const buffer = Buffer.from(await file.arrayBuffer());
-        fs.writeFileSync(filePath, buffer);
-        imageUrl = `/upload/${fileName}`;
-      }
-    }
-
-    const productData = {
-      name: data.get("name"),
-      price: data.get("price"),
-      description: data.get("description"),
-      imageUrl,
-    };
+    const productData = await req.json();
 
     if (!productData.name || !productData.price) {
       return new Response(JSON.stringify({ error: "Missing fields" }), { status: 400, headers: corsHeaders() });
