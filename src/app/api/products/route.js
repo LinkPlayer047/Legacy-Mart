@@ -29,7 +29,7 @@ export async function GET() {
   }
 }
 
-// POST add new product with image upload (Cloudinary + local fallback)
+// POST add new product (Cloudinary + local fallback)
 export async function POST(req) {
   try {
     await connectToDB();
@@ -44,7 +44,7 @@ export async function POST(req) {
         const uploadedImage = await cloudinary.uploader.upload(file.path, { folder: "products" });
         imageUrl = uploadedImage.secure_url;
       } catch (err) {
-        // Local fallback
+        // Local fallback if Cloudinary fails
         const uploadDir = path.join(process.cwd(), "public/upload");
         if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
         const fileName = Date.now() + "-" + file.name;
