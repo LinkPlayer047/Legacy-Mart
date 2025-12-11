@@ -1,7 +1,8 @@
 import connectToDB from "@/lib/db";
 import Product from "@/models/products";
+import cloudinary from "@/lib/cloudinary";
 
-const allowedOrigin = "https://legacy-mart-ap.vercel.app"; 
+const allowedOrigin = "https://legacy-mart-ap.vercel.app";
 
 function corsHeaders() {
   return {
@@ -11,7 +12,6 @@ function corsHeaders() {
   };
 }
 
-// CORS preflight
 export async function OPTIONS() {
   return new Response(null, { headers: corsHeaders() });
 }
@@ -22,10 +22,7 @@ export async function GET(req, { params }) {
     await connectToDB();
     const product = await Product.findById(params.id);
     if (!product)
-      return new Response(
-        JSON.stringify({ error: "Product not found" }),
-        { status: 404, headers: corsHeaders() }
-      );
+      return new Response(JSON.stringify({ error: "Product not found" }), { status: 404, headers: corsHeaders() });
     return new Response(JSON.stringify(product), { status: 200, headers: corsHeaders() });
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders() });
@@ -36,13 +33,24 @@ export async function GET(req, { params }) {
 export async function PUT(req, { params }) {
   try {
     await connectToDB();
-    const updateData = await req.json();
+    const data = await req.formData(); // Expect FormData
+    const file = data.get("image");
+
+    let updateData = {
+      name: data.get("name"),
+      price: data.get("price"),
+      description: data.get("description"),
+    };
+
+    if (file) {
+      const uploadedImage = await cloudinary.uploader.upload(file.path, { folder: "products" });
+      updateData.imageUrl = uploadedImage.secure_url;
+    }
+
     const updatedProduct = await Product.findByIdAndUpdate(params.id, updateData, { new: true });
     if (!updatedProduct)
-      return new Response(
-        JSON.stringify({ error: "Product not found" }),
-        { status: 404, headers: corsHeaders() }
-      );
+      return new Response(JSON.stringify({ error: "Product not found" }), { status: 404, headers: corsHeaders() });
+
     return new Response(JSON.stringify(updatedProduct), { status: 200, headers: corsHeaders() });
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders() });
@@ -53,21 +61,13 @@ export async function PUT(req, { params }) {
 export async function DELETE(req, { params }) {
   try {
     await connectToDB();
-    const { id } = params; // ✅ Correct destructure
-
-    console.log("DELETE request received for ID:", id);
+    const { id } = params;
 
     const deletedProduct = await Product.findByIdAndDelete(id);
     if (!deletedProduct)
-      return new Response(
-        JSON.stringify({ error: "Product not found" }),
-        { status: 404, headers: corsHeaders() }
-      );
+      return new Response(JSON.stringify({ error: "Product not found" }), { status: 404, headers: corsHeaders() });
 
-    return new Response(
-      JSON.stringify({ message: "Product deleted" }),
-      { status: 200, headers: corsHeaders() }
-    );
+    return new Response(JSON.stringify({ message: "Product deleted" }), { status: 200, headers: corsHeaders() });
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders() });
   }

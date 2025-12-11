@@ -1,5 +1,6 @@
 import connectToDB from "@/lib/db";
 import Product from "@/models/products";
+import cloudinary from "@/lib/cloudinary";
 
 const allowedOrigin = "https://legacy-mart-ap.vercel.app";
 
@@ -11,7 +12,6 @@ function corsHeaders() {
   };
 }
 
-// CORS preflight
 export async function OPTIONS() {
   return new Response(null, { headers: corsHeaders() });
 }
@@ -27,11 +27,26 @@ export async function GET() {
   }
 }
 
-// POST add new product
+// POST add new product with image upload
 export async function POST(req) {
   try {
     await connectToDB();
-    const productData = await req.json();
+    const data = await req.formData(); // Expect FormData
+    const file = data.get("image");
+
+    let imageUrl = "";
+    if (file) {
+      const uploadedImage = await cloudinary.uploader.upload(file.path, { folder: "products" });
+      imageUrl = uploadedImage.secure_url;
+    }
+
+    const productData = {
+      name: data.get("name"),
+      price: data.get("price"),
+      description: data.get("description"),
+      imageUrl,
+      // add other fields if needed
+    };
 
     if (!productData.name || !productData.price) {
       return new Response(JSON.stringify({ error: "Missing fields" }), { status: 400, headers: corsHeaders() });
