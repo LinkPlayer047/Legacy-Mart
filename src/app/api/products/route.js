@@ -1,14 +1,27 @@
 import connectToDB from "@/lib/db";
 import Product from "@/models/products";
 import cloudinary from "@/lib/cloudinary";
+import { corsHeaders } from "@/lib/cors";
+
+// Preflight
+export async function OPTIONS() {
+  return new Response(null, { headers: corsHeaders });
+}
 
 export async function GET() {
   try {
     await connectToDB();
     const products = await Product.find().sort({ createdAt: -1 });
-    return Response.json(products);
+
+    return new Response(JSON.stringify(products), {
+      status: 200,
+      headers: corsHeaders,
+    });
   } catch (err) {
-    return Response.json({ error: err.message }, { status: 500 });
+    return new Response(
+      JSON.stringify({ error: err.message }),
+      { status: 500, headers: corsHeaders }
+    );
   }
 }
 
@@ -24,17 +37,16 @@ export async function POST(req) {
     const files = formData.getAll("images");
 
     if (!name || !price || files.length === 0) {
-      return Response.json(
-        { error: "Name, price and images are required" },
-        { status: 400 }
+      return new Response(
+        JSON.stringify({ error: "Missing fields" }),
+        { status: 400, headers: corsHeaders }
       );
     }
 
     const uploadedImages = [];
 
     for (const file of files) {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      const buffer = Buffer.from(await file.arrayBuffer());
 
       const uploadRes = await new Promise((resolve, reject) => {
         cloudinary.uploader.upload_stream(
@@ -59,9 +71,15 @@ export async function POST(req) {
       images: uploadedImages,
     });
 
-    return Response.json(product, { status: 201 });
+    return new Response(JSON.stringify(product), {
+      status: 201,
+      headers: corsHeaders,
+    });
   } catch (err) {
     console.error(err);
-    return Response.json({ error: err.message }, { status: 500 });
+    return new Response(
+      JSON.stringify({ error: err.message }),
+      { status: 500, headers: corsHeaders }
+    );
   }
 }

@@ -1,31 +1,47 @@
 import connectToDB from "@/lib/db";
 import Product from "@/models/products";
 import cloudinary from "@/lib/cloudinary";
+import { corsHeaders } from "@/lib/cors";
 
-// GET single product
+// Preflight
+export async function OPTIONS() {
+  return new Response(null, { headers: corsHeaders });
+}
+
 export async function GET(req, { params }) {
   try {
     await connectToDB();
-
     const product = await Product.findById(params.id);
+
     if (!product) {
-      return Response.json({ error: "Product not found" }, { status: 404 });
+      return new Response(
+        JSON.stringify({ error: "Not found" }),
+        { status: 404, headers: corsHeaders }
+      );
     }
 
-    return Response.json(product);
+    return new Response(JSON.stringify(product), {
+      status: 200,
+      headers: corsHeaders,
+    });
   } catch (err) {
-    return Response.json({ error: err.message }, { status: 500 });
+    return new Response(
+      JSON.stringify({ error: err.message }),
+      { status: 500, headers: corsHeaders }
+    );
   }
 }
 
-// UPDATE product
 export async function PUT(req, { params }) {
   try {
     await connectToDB();
-
     const product = await Product.findById(params.id);
+
     if (!product) {
-      return Response.json({ error: "Product not found" }, { status: 404 });
+      return new Response(
+        JSON.stringify({ error: "Not found" }),
+        { status: 404, headers: corsHeaders }
+      );
     }
 
     const formData = await req.formData();
@@ -38,7 +54,6 @@ export async function PUT(req, { params }) {
     const files = formData.getAll("images");
 
     if (files.length > 0) {
-      // delete old images from cloudinary
       for (const img of product.images) {
         await cloudinary.uploader.destroy(img.public_id);
       }
@@ -46,8 +61,7 @@ export async function PUT(req, { params }) {
       const uploadedImages = [];
 
       for (const file of files) {
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
+        const buffer = Buffer.from(await file.arrayBuffer());
 
         const uploadRes = await new Promise((resolve, reject) => {
           cloudinary.uploader.upload_stream(
@@ -70,21 +84,28 @@ export async function PUT(req, { params }) {
 
     await product.save();
 
-    return Response.json(product);
+    return new Response(JSON.stringify(product), {
+      status: 200,
+      headers: corsHeaders,
+    });
   } catch (err) {
-    console.error(err);
-    return Response.json({ error: err.message }, { status: 500 });
+    return new Response(
+      JSON.stringify({ error: err.message }),
+      { status: 500, headers: corsHeaders }
+    );
   }
 }
 
-// DELETE product
 export async function DELETE(req, { params }) {
   try {
     await connectToDB();
-
     const product = await Product.findById(params.id);
+
     if (!product) {
-      return Response.json({ error: "Product not found" }, { status: 404 });
+      return new Response(
+        JSON.stringify({ error: "Not found" }),
+        { status: 404, headers: corsHeaders }
+      );
     }
 
     for (const img of product.images) {
@@ -93,8 +114,14 @@ export async function DELETE(req, { params }) {
 
     await product.deleteOne();
 
-    return Response.json({ message: "Product deleted successfully" });
+    return new Response(
+      JSON.stringify({ message: "Deleted" }),
+      { status: 200, headers: corsHeaders }
+    );
   } catch (err) {
-    return Response.json({ error: err.message }, { status: 500 });
+    return new Response(
+      JSON.stringify({ error: err.message }),
+      { status: 500, headers: corsHeaders }
+    );
   }
 }
