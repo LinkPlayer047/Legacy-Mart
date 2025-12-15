@@ -8,6 +8,7 @@ export async function OPTIONS() {
   return new Response(null, { headers: corsHeaders });
 }
 
+// GET single product by id
 export async function GET(req, { params }) {
   try {
     await connectToDB();
@@ -32,6 +33,7 @@ export async function GET(req, { params }) {
   }
 }
 
+// PUT update product by id
 export async function PUT(req, { params }) {
   try {
     await connectToDB();
@@ -48,12 +50,15 @@ export async function PUT(req, { params }) {
 
     product.name = formData.get("name") || product.name;
     product.price = formData.get("price") || product.price;
-    product.description =
-      formData.get("description") || product.description;
+    product.description = formData.get("description") || product.description;
+    product.sale = formData.get("sale") || product.sale;
+    product.colors = formData.getAll("colors[]") || product.colors;
+    product.sizes = formData.getAll("sizes[]") || product.sizes;
 
     const files = formData.getAll("images");
 
     if (files.length > 0) {
+      // Delete old images from cloudinary
       for (const img of product.images) {
         await cloudinary.uploader.destroy(img.public_id);
       }
@@ -66,10 +71,7 @@ export async function PUT(req, { params }) {
         const uploadRes = await new Promise((resolve, reject) => {
           cloudinary.uploader.upload_stream(
             { folder: "products" },
-            (err, result) => {
-              if (err) reject(err);
-              else resolve(result);
-            }
+            (err, result) => (err ? reject(err) : resolve(result))
           ).end(buffer);
         });
 
@@ -96,6 +98,7 @@ export async function PUT(req, { params }) {
   }
 }
 
+// DELETE product by id
 export async function DELETE(req, { params }) {
   try {
     await connectToDB();

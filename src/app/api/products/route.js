@@ -8,6 +8,7 @@ export async function OPTIONS() {
   return new Response(null, { headers: corsHeaders });
 }
 
+// GET all products
 export async function GET() {
   try {
     await connectToDB();
@@ -25,6 +26,7 @@ export async function GET() {
   }
 }
 
+// POST new product
 export async function POST(req) {
   try {
     await connectToDB();
@@ -34,6 +36,9 @@ export async function POST(req) {
     const name = formData.get("name");
     const price = formData.get("price");
     const description = formData.get("description");
+    const sale = formData.get("sale") || 0;
+    const colors = formData.getAll("colors[]");
+    const sizes = formData.getAll("sizes[]");
     const files = formData.getAll("images");
 
     if (!name || !price || files.length === 0) {
@@ -51,10 +56,7 @@ export async function POST(req) {
       const uploadRes = await new Promise((resolve, reject) => {
         cloudinary.uploader.upload_stream(
           { folder: "products" },
-          (err, result) => {
-            if (err) reject(err);
-            else resolve(result);
-          }
+          (err, result) => (err ? reject(err) : resolve(result))
         ).end(buffer);
       });
 
@@ -68,6 +70,9 @@ export async function POST(req) {
       name,
       price,
       description,
+      sale,
+      colors,
+      sizes,
       images: uploadedImages,
     });
 
