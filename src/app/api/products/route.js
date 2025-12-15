@@ -1,45 +1,67 @@
 import connectToDB from "@/lib/db";
-import Product from "@/models/products";
+import Product from "@/models/product";
+import cloudinary from "@/lib/cloudinary";
 
-const allowedOrigin = "https://legacy-mart-ap.vercel.app";
-
-function corsHeaders() {
-  return {
-    "Access-Control-Allow-Origin": allowedOrigin,
-    "Access-Control-Allow-Methods": "GET,POST,OPTIONS,DELETE,PUT",
-    "Access-Control-Allow-Headers": "Content-Type",
-  };
-}
-
-// CORS preflight
-export async function OPTIONS() {
-  return new Response(null, { headers: corsHeaders() });
-}
-
-// GET all products
 export async function GET() {
   try {
     await connectToDB();
-    const products = await Product.find({});
-    return new Response(JSON.stringify(products), { status: 200, headers: corsHeaders() });
+    const products = await Product.find().sort({ createdAt: -1 });
+    return Response.json(products);
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders() });
+    return Response.json({ error: err.message }, { status: 500 });
   }
 }
 
-// POST add new product
 export async function POST(req) {
   try {
     await connectToDB();
-    const productData = await req.json();
 
-    if (!productData.name || !productData.price) {
-      return new Response(JSON.stringify({ error: "Missing fields" }), { status: 400, headers: corsHeaders() });
+    const formData = await req.formData();
+
+    const name = formData.get("name");
+    const price = formData.get("price");
+    const description = formData.get("description");
+    const files = formData.getAll("images");
+
+    if (!name || !price || files.length === 0) {
+      return Response.json(
+        { error: "Name, price and images are required" },
+        { status: 400 }
+      );
     }
 
-    const newProduct = await Product.create(productData);
-    return new Response(JSON.stringify(newProduct), { status: 201, headers: corsHeaders() });
+    const uploadedImages = [];
+
+    for (const file of files) {
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+
+      const uploadRes = await new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          { folder: "products" },
+          (err, result) => {
+            if (err) reject(err);
+            else resolve(result);
+          }
+        ).end(buffer);
+      });
+
+      uploadedImages.push({
+        url: uploadRes.secure_url,
+        public_id: uploadRes.public_id,
+      });
+    }
+
+    const product = await Product.create({
+      name,
+      price,
+      description,
+      images: uploadedImages,
+    });
+
+    return Response.json(product, { status: 201 });
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders() });
+    console.error(err);
+    return Response.json({ error: err.message }, { status: 500 });
   }
 }
