@@ -1,29 +1,46 @@
-import { categories } from "@/lib/db"; 
+import connectToDB from "@/lib/db";
+import Category from "@/models/category";
 
-export async function GET(req) {
-  // Return all categories
-  return new Response(JSON.stringify(categories), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+// GET → all categories
+export async function GET() {
+  await connectToDB();
+
+  const categories = await Category.find().sort({ name: 1 });
+
+  return new Response(
+    JSON.stringify({ categories }),
+    { status: 200 }
+  );
 }
 
+// POST → add new category
 export async function POST(req) {
-  const body = await req.json();
-  const { name } = body;
+  await connectToDB();
+
+  const { name } = await req.json();
 
   if (!name) {
-    return new Response(JSON.stringify({ error: "Name is required" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ error: "Category name is required" }),
+      { status: 400 }
+    );
   }
 
-  const newCategory = { id: Date.now(), name };
-  categories.push(newCategory); // ya DB insert
-
-  return new Response(JSON.stringify(newCategory), {
-    status: 201,
-    headers: { "Content-Type": "application/json" },
+  const exists = await Category.findOne({
+    name: new RegExp(`^${name}$`, "i"),
   });
+
+  if (exists) {
+    return new Response(
+      JSON.stringify({ error: "Category already exists" }),
+      { status: 409 }
+    );
+  }
+
+  const category = await Category.create({ name });
+
+  return new Response(
+    JSON.stringify({ category }),
+    { status: 201 }
+  );
 }

@@ -4,6 +4,7 @@ import connectToDB from "@/lib/db";
 import Product from "@/models/products";
 import cloudinary from "@/lib/cloudinary";
 import { corsHeaders } from "@/lib/cors";
+import Category from "@/models/category";
 
 // Preflight
 export async function OPTIONS() {
@@ -53,7 +54,20 @@ export async function PUT(req, { params }) {
     product.name = formData.get("name") || product.name;
     product.price = Number(formData.get("price")) || product.price;
     product.description = formData.get("description") || product.description;
-    product.category = formData.get("category") || product.category;
+    if (formData.get("category")) {
+  const cleanCategory = formData.get("category").trim();
+
+  const exists = await Category.findOne({
+    name: new RegExp(`^${cleanCategory}$`, "i"),
+  });
+
+  if (!exists) {
+    await Category.create({ name: cleanCategory });
+  }
+
+  product.category = cleanCategory;
+}
+
     product.sale = Number(formData.get("sale")) || product.sale;
 
     const colors = formData.getAll("colors[]");

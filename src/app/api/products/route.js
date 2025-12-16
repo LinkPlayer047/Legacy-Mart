@@ -4,6 +4,8 @@ import connectToDB from "@/lib/db";
 import Product from "@/models/products";
 import cloudinary from "@/lib/cloudinary";
 import { corsHeaders } from "@/lib/cors";
+import Category from "@/models/category";
+
 
 // Preflight
 export async function OPTIONS() {
@@ -51,6 +53,20 @@ export async function POST(req) {
       );
     }
 
+    // 🔥 AUTO CREATE CATEGORY IF NOT EXISTS
+if (category) {
+  const cleanCategory = category.trim();
+
+  const exists = await Category.findOne({
+    name: new RegExp(`^${cleanCategory}$`, "i"),
+  });
+
+  if (!exists) {
+    await Category.create({ name: cleanCategory });
+  }
+}
+
+
     const uploadedImages = [];
 
     for (const file of files) {
@@ -73,15 +89,16 @@ export async function POST(req) {
     }
 
     const product = await Product.create({
-      name,
-      price,
-      description,
-      category,
-      sale,
-      colors,
-      sizes,
-      images: uploadedImages,
-    });
+  name,
+  price,
+  description,
+  category: category.trim(),
+  sale,
+  colors,
+  sizes,
+  images: uploadedImages,
+});
+
 
     return new Response(JSON.stringify(product), {
       status: 201,
