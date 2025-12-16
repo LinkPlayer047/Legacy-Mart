@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import connectToDB from "@/lib/db";
 import Product from "@/models/products";
 import cloudinary from "@/lib/cloudinary";
