@@ -1,5 +1,5 @@
 import connectToDB from "@/lib/db";
-import User from "../../../../models/user";
+import User from "@/models/user";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
