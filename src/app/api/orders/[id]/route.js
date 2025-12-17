@@ -4,10 +4,6 @@ import { getUserFromToken } from "@/lib/auth";
 import { corsHeaders } from "@/lib/cors";
 
 export async function PATCH(req, { params }) {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
-
   try {
     await connectToDB();
 
@@ -29,11 +25,19 @@ export async function PATCH(req, { params }) {
       { new: true }
     );
 
-    return new Response(JSON.stringify({ order }), { status: 200, headers: corsHeaders });
+    return new Response(JSON.stringify({ order }), {
+      status: 200,
+      headers: corsHeaders,
+    });
   } catch (err) {
     return new Response(JSON.stringify({ error: "Update failed" }), {
       status: 500,
       headers: corsHeaders,
     });
   }
+}
+
+// OPTIONS handler
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: corsHeaders });
 }

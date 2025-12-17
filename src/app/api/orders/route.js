@@ -4,10 +4,6 @@ import { getUserFromToken } from "@/lib/auth";
 import { corsHeaders } from "@/lib/cors";
 
 export async function GET(req) {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
-
   try {
     await connectToDB();
 
@@ -23,11 +19,22 @@ export async function GET(req) {
 
     const orders = await Order.find().sort({ createdAt: -1 });
 
-    return new Response(JSON.stringify({ orders }), { status: 200, headers: corsHeaders });
+    return new Response(JSON.stringify({ orders }), {
+      status: 200,
+      headers: corsHeaders,
+    });
   } catch (err) {
     return new Response(JSON.stringify({ error: "Failed to fetch orders" }), {
       status: 500,
       headers: corsHeaders,
     });
   }
+}
+
+// OPTIONS handler for CORS preflight
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: corsHeaders,
+  });
 }
