@@ -1,5 +1,5 @@
 import connectToDB from "@/lib/db";
-import { User } from "@/models/user";
+import User from "@/models/user";
 import { getUserFromToken } from "@/lib/auth";
 
 export async function PATCH(req, { params }) {

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import connectToDB from "@/lib/db";
-import { User } from "@/models/user";
+import User from "@/models/user";
 
 export async function getUserFromToken(token) {
   if (!token) return null;
