@@ -1,8 +1,13 @@
 import connectToDB from "@/lib/db";
 import { Order } from "@/models/order";
 import { getUserFromToken } from "@/lib/auth";
+import { corsHeaders } from "@/lib/cors";
 
 export async function PATCH(req) {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
   try {
     await connectToDB();
 
@@ -12,6 +17,7 @@ export async function PATCH(req) {
     if (!user)
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
+        headers: corsHeaders,
       });
 
     const { orderId } = await req.json();
@@ -22,10 +28,11 @@ export async function PATCH(req) {
       { new: true }
     );
 
-    return new Response(JSON.stringify({ order }), { status: 200 });
+    return new Response(JSON.stringify({ order }), { status: 200, headers: corsHeaders });
   } catch {
     return new Response(JSON.stringify({ error: "Cancel failed" }), {
       status: 500,
+      headers: corsHeaders,
     });
   }
 }
