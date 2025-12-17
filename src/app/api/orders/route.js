@@ -1,6 +1,6 @@
 import connectToDB from "@/lib/db";
 import { Order } from "@/models/order";
-import { getAdminFromToken } from "@/lib/adminauth";
+import { getUserFromToken } from "@/lib/adminauth";
 import { corsHeaders } from "@/lib/cors";
 
 export async function GET(req) {
@@ -8,7 +8,7 @@ export async function GET(req) {
     await connectToDB();
 
     const token = req.headers.get("authorization")?.split(" ")[1];
-    const admin = getAdminFromToken(token);
+    const admin = getUserFromToken(token);
 if (!admin) {
   return new Response(JSON.stringify({ error: "Unauthorized" }), {
     status: 401,
