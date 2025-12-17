@@ -21,6 +21,7 @@ const Loginform = () => {
       });
       const data = await res.json();
       if (res.ok) {
+        localStorage.setItem("token", data.token); // ✅ Store JWT
         localStorage.setItem("isLoggedIn", "true"); 
         toast.success("Login successful!");
         router.push("/dashboard");
