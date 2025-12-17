@@ -1,14 +1,14 @@
 import connectToDB from "@/lib/db";
 import User from "@/models/user";
-import { getUserFromToken } from "@/lib/auth";
+import { getAdminFromToken } from "@/lib/adminauth";
 
 export async function PATCH(req, { params }) {
   await connectToDB();
 
   const token = req.headers.get("authorization")?.split(" ")[1];
-  const admin = await getUserFromToken(token);
+  const admin = getAdminFromToken(token);
 
-  if (!admin || admin.role !== "admin") {
+  if (!admin) {
     return new Response("Unauthorized", { status: 401 });
   }
 

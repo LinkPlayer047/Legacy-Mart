@@ -1,6 +1,6 @@
 import connectToDB from "@/lib/db";
 import { Order } from "@/models/order";
-import { getUserFromToken } from "@/lib/auth";
+import { getAdminFromToken } from "@/lib/adminauth";
 import { corsHeaders } from "@/lib/cors";
 
 export async function PATCH(req, { params }) {
@@ -8,14 +8,13 @@ export async function PATCH(req, { params }) {
     await connectToDB();
 
     const token = req.headers.get("authorization")?.split(" ")[1];
-    const admin = await getUserFromToken(token);
-
-    if (!admin || admin.role !== "admin") {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: corsHeaders,
-      });
-    }
+    const admin = getAdminFromToken(token);
+if (!admin) {
+  return new Response(JSON.stringify({ error: "Unauthorized" }), {
+    status: 401,
+    headers: corsHeaders,
+  });
+}
 
     const { status } = await req.json();
 
