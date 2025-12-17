@@ -5,8 +5,9 @@ import { corsHeaders } from "@/lib/cors";
 
 export async function GET(req) {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  return new Response(null, { status: 204, headers: corsHeaders });
+}
+
 
   await connectToDB();
 

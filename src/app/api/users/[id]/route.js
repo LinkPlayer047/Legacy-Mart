@@ -5,8 +5,9 @@ import { corsHeaders } from "@/lib/cors";
 
 export async function PATCH(req, { params }) {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  return new Response(null, { status: 204, headers: corsHeaders }); // status 204
+}
+
 
   await connectToDB();
 
