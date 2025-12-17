@@ -1,15 +1,20 @@
 import connectToDB from "@/lib/db";
 import User from "@/models/user";
-import { getAdminFromToken } from "@/lib/adminauth";
+import { getUserFromToken } from "@/lib/auth";
+import { corsHeaders } from "@/lib/cors";
 
 export async function PATCH(req, { params }) {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
   await connectToDB();
 
   const token = req.headers.get("authorization")?.split(" ")[1];
-  const admin = getAdminFromToken(token);
+  const admin = await getUserFromToken(token);
 
-  if (!admin) {
-    return new Response("Unauthorized", { status: 401 });
+  if (!admin || admin.role !== "admin") {
+    return new Response("Unauthorized", { status: 401, headers: corsHeaders });
   }
 
   const { role, status } = await req.json();
@@ -20,5 +25,5 @@ export async function PATCH(req, { params }) {
     { new: true }
   ).select("-password -otp");
 
-  return Response.json({ user });
+  return new Response(JSON.stringify({ user }), { headers: corsHeaders });
 }
