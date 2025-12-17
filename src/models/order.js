@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 const OrderSchema = new mongoose.Schema(
   {
     userId: {
@@ -5,8 +7,7 @@ const OrderSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-
-    orderNumber: { type: String, required: true },
+    orderNumber: String,
 
     customer: {
       name: String,
@@ -23,7 +24,7 @@ const OrderSchema = new mongoose.Schema(
       },
     ],
 
-    totalPrice: { type: Number, required: true },
+    totalPrice: Number,
 
     paymentMethod: { type: String, default: "COD" },
     paymentStatus: { type: String, default: "unpaid" },
@@ -36,3 +37,6 @@ const OrderSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+export const Order =
+  mongoose.models.Order || mongoose.model("Order", OrderSchema);
