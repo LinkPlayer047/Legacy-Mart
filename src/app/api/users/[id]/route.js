@@ -1,6 +1,6 @@
 import connectToDB from "@/lib/db";
 import User from "@/models/user";
-import { getUserFromToken } from "@/lib/auth";
+import { getUserFromToken } from "@/lib/adminauth";
 import { corsHeaders } from "@/lib/cors";
 
 export async function PATCH(req, { params }) {

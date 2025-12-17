@@ -1,10 +1,13 @@
 import jwt from "jsonwebtoken";
+import connectToDB from "@/lib/db";
+import User from "@/models/user";
 
-export function getAdminFromToken(token) {
+export async function getUserFromToken(token) {
   if (!token) return null;
-
+  await connectToDB();
   try {
-    return jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return await User.findById(decoded.id);
   } catch {
     return null;
   }
