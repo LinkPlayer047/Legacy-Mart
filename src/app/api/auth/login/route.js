@@ -45,10 +45,16 @@ export async function POST(request) {
     }
 
     const token = jwt.sign(
-      { id: user._id, email: user.email, name: user.name },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+  {
+    id: user._id,
+    email: user.email,
+    name: user.name,
+    role: user.role // ✅ ADD THIS
+  },
+  process.env.JWT_SECRET,
+  { expiresIn: "1d" }
+);
+
 
     return NextResponse.json({
       message: "Login successful",
