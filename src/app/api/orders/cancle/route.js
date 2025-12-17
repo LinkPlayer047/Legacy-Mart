@@ -1,5 +1,5 @@
 import connectToDB from "@/lib/db";
-import Order from "@/models/order";
+import { Order } from "@/models/order";
 import { getUserFromToken } from "@/lib/auth";
 
 export async function PATCH(req) {
