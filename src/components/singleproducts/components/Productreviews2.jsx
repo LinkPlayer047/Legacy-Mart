@@ -30,7 +30,7 @@ const Productreviews2 = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`/api/products/${id}`);
+        const res = await axios.get(`/api/products/${initialData._id}`);
         setProduct(res.data);
         setMainImage(res.data.images?.[0]);
         setSelectedColor(res.data.colors?.[0]?.hex || null);
