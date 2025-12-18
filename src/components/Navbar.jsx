@@ -163,7 +163,7 @@ const Navbar = () => {
 
         {/* Logo */}
         <div className='lg:w-[10%] w-[40%] lg:flex items-center'>
-          <img src="/logo.png" alt="Logo" className='h-10' />
+          <img src="/legacy-logo.png" alt="Logo" className='h-10' />
         </div>
 
         {/* Menu Links */}
