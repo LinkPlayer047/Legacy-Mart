@@ -1,3 +1,5 @@
+'use client';
+
 import Everything from '@/components/everything/Everything'
 import React from 'react'
 

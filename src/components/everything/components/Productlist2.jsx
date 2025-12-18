@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useMemo, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
@@ -24,26 +25,27 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
   priceRange: [500, 5000],
   sort: 'newest'
 });
-  const searchParams = useSearchParams();
-  const categoryFromURL = searchParams.get('category') || 'All';
 
 
   const PAGE_SIZE = 12;
 
   // Fetch products from backend
   useEffect(() => {
+  const searchParams = useSearchParams(); // move inside useEffect
+  const categoryFromURL = searchParams.get('category') || 'All';
+
   setSelectedCategory(categoryFromURL);
   setAppliedFilters(prev => ({
     ...prev,
     category: categoryFromURL
   }));
   setCurrentPage(1);
-}, [categoryFromURL]);
+}, []);
 
 
   useEffect(() => {
     axios
-      .get("/api/products") // replace with your backend endpoint if different
+      .get("/api/products") 
       .then((res) => setProducts(res.data))
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
