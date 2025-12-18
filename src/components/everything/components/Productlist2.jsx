@@ -35,14 +35,13 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
   // Fetch products from backend
   useEffect(() => {
   const categoryFromURL = searchParams.get('category') || 'All';
-
   setSelectedCategory(categoryFromURL);
   setAppliedFilters(prev => ({
     ...prev,
     category: categoryFromURL
   }));
   setCurrentPage(1);
-}, []);
+}, [searchParams.toString()]);
 
 
   useEffect(() => {
