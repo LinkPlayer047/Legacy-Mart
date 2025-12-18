@@ -14,7 +14,7 @@ const lato = Lato({ subsets: ["latin"], weight: ["700"] });
 
 const Productlist2 = ({ pageTitle = "Our Products" }) => {
   const [cartItems, setCartItems] = useState([]);
-  const [products, setProducts] = useState([]); // ← dynamic backend data
+  const [products, setProducts] = useState([]); 
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortOption, setSortOption] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,7 +26,7 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
   priceRange: [500, 5000],
   sort: 'newest'
 });
-  const searchParams = useSearchParams(); // move inside useEffect
+  const searchParams = useSearchParams();
 
 
 
