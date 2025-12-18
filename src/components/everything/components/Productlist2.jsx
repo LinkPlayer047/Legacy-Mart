@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Lato } from "next/font/google";
 import { toast } from "react-toastify";
 import allProducts from "@/utiles/products"; // renamed for clarity
+import axios from "axios"; // npm i axios
 
 const lato = Lato({ subsets: ["latin"], weight: ["700"] });
 
