@@ -40,7 +40,7 @@ export async function POST(req) {
 
   const token = jwt.sign(
     { id: admin._id, role: admin.role },
-    process.env.JWT_SECRET,
+    process.env.ADMIN_JWT_SECRET,
     { expiresIn: "1d" }
   );
 
