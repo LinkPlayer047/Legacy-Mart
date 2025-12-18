@@ -250,7 +250,7 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
                   <Link href={`/singleproduct/${product.id}`}>
                     <div className="relative w-full h-64 cursor-pointer">
                       <img
-                        src={product.image}
+                        src={product.images?.[0]?.url || "/placeholder.png"}
                         alt={product.name}
                         className="object-cover w-full h-full"
                       />
