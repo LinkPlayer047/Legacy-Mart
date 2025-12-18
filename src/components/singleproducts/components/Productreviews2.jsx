@@ -1,20 +1,20 @@
-
-
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import products from "@/utiles/products";
 import { TbZoomScanFilled } from "react-icons/tb";
-
+import axios from "axios";
 
 const Productreviews2 = () => {
   const { id } = useParams();
   const router = useRouter();
-  const product = products.find((p) => p.id === parseInt(id));
 
-  const [mainImage, setMainImage] = useState(product?.images?.[0]);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const [mainImage, setMainImage] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
-  const [selectedColor, setSelectedColor] = useState(product?.colors?.[0]?.hex);
+  const [selectedColor, setSelectedColor] = useState(null);
   const [zoom, setZoom] = useState(false);
   const [zoomPos, setZoomPos] = useState({ x: 0, y: 0 });
   const imgRef = useRef();
@@ -26,8 +26,32 @@ const Productreviews2 = () => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
 
-  // ✅ If product not found
-  if (!product) {
+  // Fetch product data from API
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await axios.get(`/api/products/${id}`);
+        setProduct(res.data);
+        setMainImage(res.data.images?.[0]);
+        setSelectedColor(res.data.colors?.[0]?.hex || null);
+      } catch (err) {
+        console.error(err);
+        setError("Product not found");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="py-20 text-center text-gray-500">Loading...</div>
+    );
+  }
+
+  if (error || !product) {
     return (
       <div className="py-20 text-center text-gray-500">
         Product not found 😕
@@ -35,7 +59,6 @@ const Productreviews2 = () => {
     );
   }
 
-  // 🖱️ Image Zoom Handler
   const handleMouseMove = (e) => {
     const { left, top, width, height } = imgRef.current.getBoundingClientRect();
     const x = ((e.clientX - left) / width) * 100;
@@ -56,7 +79,7 @@ const Productreviews2 = () => {
             onMouseMove={handleMouseMove}
           >
             <img
-              src={product.image}
+              src={mainImage || product.image}
               alt={product.name}
               className={`w-full h-full object-cover transition-transform duration-300 ${
                 zoom ? "scale-150" : "scale-100"
@@ -183,9 +206,7 @@ const Productreviews2 = () => {
 
           <p className="text-2xl font-semibold">₨ {product.price}.00</p>
 
-          <p className="text-gray-500 leading-relaxed">
-            {product?.description}
-          </p>
+          <p className="text-gray-500 leading-relaxed">{product?.description}</p>
 
           {/* Add to Cart Section */}
           <div className="mt-6 border-b border-gray-300 pb-7">
@@ -196,9 +217,7 @@ const Productreviews2 = () => {
               <div className="flex border border-gray-300">
                 <button
                   className="px-3 py-2 text-xl"
-                  onClick={() =>
-                    setQuantity((prev) => (prev > 1 ? prev - 1 : 1))
-                  }
+                  onClick={() => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))}
                 >
                   -
                 </button>
@@ -216,11 +235,8 @@ const Productreviews2 = () => {
               {/* Add to Cart Button */}
               <button
                 onClick={() => {
-                  const storedCart =
-                    JSON.parse(localStorage.getItem("cartItems")) || [];
-                  const existingItem = storedCart.find(
-                    (item) => item.name === product.name
-                  );
+                  const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+                  const existingItem = storedCart.find((item) => item.name === product.name);
 
                   let updatedCart;
                   if (existingItem) {
@@ -242,10 +258,7 @@ const Productreviews2 = () => {
                     ];
                   }
 
-                  localStorage.setItem(
-                    "cartItems",
-                    JSON.stringify(updatedCart)
-                  );
+                  localStorage.setItem("cartItems", JSON.stringify(updatedCart));
                   router.push("/cart");
                 }}
                 className="px-6 py-3 rounded-full text-white font-semibold transition bg-[#fc001d] hover:bg-[#e51931]"
@@ -302,9 +315,7 @@ const Productreviews2 = () => {
                   </tr>
                   <tr>
                     <th className="text-left p-3 font-semibold">Category</th>
-                    <td className="p-3 text-gray-700">
-                      {product.category || "-"}
-                    </td>
+                    <td className="p-3 text-gray-700">{product.category || "-"}</td>
                   </tr>
                 </tbody>
               </table>
@@ -327,9 +338,7 @@ const Productreviews2 = () => {
                     onMouseEnter={() => rating === 0 && setHover(star)}
                     onMouseLeave={() => rating === 0 && setHover(0)}
                     className={`text-2xl cursor-pointer ${
-                      (hover || rating) >= star
-                        ? "text-orange-400"
-                        : "text-gray-300"
+                      (hover || rating) >= star ? "text-orange-400" : "text-gray-300"
                     }`}
                   >
                     ★

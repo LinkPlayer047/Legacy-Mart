@@ -4,14 +4,13 @@ import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import { Lato } from "next/font/google";
 import { toast } from "react-toastify";
-import allProducts from "@/utiles/products"; // renamed for clarity
-import axios from "axios"; // npm i axios
+import axios from "axios"; // ensure axios is installed
 
 const lato = Lato({ subsets: ["latin"], weight: ["700"] });
 
 const Productlist2 = ({ pageTitle = "Our Products" }) => {
   const [cartItems, setCartItems] = useState([]);
-  const [Products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]); // ← dynamic backend data
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortOption, setSortOption] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,11 +19,11 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
   const [appliedFilters, setAppliedFilters] = useState(null);
 
   const PAGE_SIZE = 12;
-  const products = allProducts || [];
 
+  // Fetch products from backend
   useEffect(() => {
     axios
-      .get("/api/products")
+      .get("/api/products") // replace with your backend endpoint if different
       .then((res) => setProducts(res.data))
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
