@@ -23,9 +23,6 @@ const Sidebar = ({ setSidebarOpen }) => {
         <button onClick={() => router.push("/dashboard#profile")} className="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
           <FiUser /> Profile
         </button>
-        <button onClick={() => router.push("/wishlist")} className="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
-          <FiHeart /> Wishlist
-        </button>
         <button onClick={() => router.push("/cart")} className="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
           <FiShoppingCart /> Cart
         </button>

@@ -10,6 +10,7 @@ const lato = Lato({ subsets: ["latin"], weight: ["700"] });
 
 const Productlist2 = ({ pageTitle = "Our Products" }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [Products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortOption, setSortOption] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,7 +21,14 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
   const PAGE_SIZE = 12;
   const products = allProducts || [];
 
-  // Categories
+  useEffect(() => {
+    axios
+      .get("/api/products")
+      .then((res) => setProducts(res.data))
+      .catch((err) => console.error("Error fetching products:", err));
+  }, []);
+
+  // Categories dynamically from backend data
   const categories = useMemo(() => {
     const set = new Set(products.map((p) => p.category));
     return ["All", ...Array.from(set)];
