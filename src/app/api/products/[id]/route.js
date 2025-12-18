@@ -5,6 +5,8 @@ import Product from "@/models/products";
 import cloudinary from "@/lib/cloudinary";
 import { corsHeaders } from "@/lib/cors";
 import Category from "@/models/category";
+import mongoose from "mongoose";
+
 
 // Preflight
 export async function OPTIONS() {
@@ -15,7 +17,18 @@ export async function OPTIONS() {
 export async function GET(req, { params }) {
   try {
     await connectToDB();
-    const product = await Product.findById(params.id);
+
+    const { id } = params;
+
+    // ✅ INVALID ID CHECK (IMPORTANT)
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid product id" }),
+        { status: 400, headers: corsHeaders }
+      );
+    }
+
+    const product = await Product.findById(id);
 
     if (!product) {
       return new Response(
@@ -29,12 +42,14 @@ export async function GET(req, { params }) {
       headers: corsHeaders,
     });
   } catch (err) {
+    console.error("GET PRODUCT ERROR:", err);
     return new Response(
-      JSON.stringify({ error: err.message }),
+      JSON.stringify({ error: "Server error" }),
       { status: 500, headers: corsHeaders }
     );
   }
 }
+
 
 // PUT update product
 export async function PUT(req, { params }) {

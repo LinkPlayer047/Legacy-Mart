@@ -106,6 +106,8 @@ import { Lato } from 'next/font/google'
 import { RxDropdownMenu } from "react-icons/rx";
 import { FaBagShopping } from "react-icons/fa6";
 import { FaUser } from "react-icons/fa";
+import axios from "axios";
+
 
 export const lato = Lato({ subsets: ['latin'], weight: ['700'] })
 
@@ -113,8 +115,15 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const toggleMenu = () => setMenuOpen(!menuOpen);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+  axios.get("/api/category")
+    .then(res => setCategories(res.data))
+    .catch(console.error);
+}, []);
+
 
   // Cart total calculation
   useEffect(() => {
@@ -167,58 +176,81 @@ const Navbar = () => {
         </div>
 
         {/* Menu Links */}
-        <div className='lg:w-[55%] hidden lg:flex items-center gap-7 justify-start'>
-          <Link href={'/everything'} className={`text-white text-[14.4px] uppercase hover:text-[#0075c4] ${lato.className} font-bold`}>Everything</Link>
-          <Link href={'/category/women'} className={`text-white text-[14.4px] uppercase hover:text-[#0075c4] ${lato.className} font-bold`}>Women</Link>
-          <Link href={'/category/men'} className={`text-white text-[14.4px] uppercase hover:text-[#0075c4] ${lato.className} font-bold`}>Men</Link>
-          <Link href={'/category/accessories'} className={`text-white text-[14.4px] uppercase hover:text-[#0075c4] ${lato.className} font-bold`}>Accessories</Link>
-        </div>
+<div className='lg:w-[55%] hidden lg:flex items-center gap-7 justify-start'>
+  <Link
+    href="/everything"
+    className={`text-white text-[14.4px] uppercase hover:text-[#0075c4] ${lato.className} font-bold`}
+  >
+    Everything
+  </Link>
 
-        {/* Secondary Links */}
-        <div className='lg:w-[25%] hidden lg:flex items-center gap-7 justify-end'>
-          <Link href={'/about'} className={`text-white text-[13px] hover:text-[#0075c4] uppercase ${lato.className} font-bold`}>About</Link>
-          <Link href={'/contact'} className={`text-white text-[13px] hover:text-[#0075c4] uppercase ${lato.className} font-bold`}>Contact Us</Link>
-        </div>
+  {categories.map((cat) => (
+    <Link
+      key={cat._id}
+      href={`/everything?category=${encodeURIComponent(cat.name)}`}
+      className={`text-white text-[14.4px] uppercase hover:text-[#0075c4] ${lato.className} font-bold`}
+    >
+      {cat.name}
+    </Link>
+  ))}
+</div>
 
-        {/* Cart + Account */}
-        <div className='flex items-center w-[43%] lg:w-[10%] px-2 gap-2 justify-end'>
-          <Link href={'/cart'} className={`text-white text-[13px] uppercase hover:text-[#0075c4] ${lato.className} font-bold flex items-center gap-1`}>
-            ₨ {totalAmount} <FaBagShopping className='h-5 w-5' />
-          </Link>
-          <button 
-            onClick={handleAccountClick}
-            className={`text-white text-[13px] uppercase hover:text-[#0075c4] ${lato.className} font-bold hidden lg:flex`}
-          >
-            <FaUser className='h-5 w-5' />
-          </button>
-        </div>
+{/* Secondary Links */}
+<div className='lg:w-[25%] hidden lg:flex items-center gap-7 justify-end'>
+  <Link href={'/about'} className={`text-white text-[13px] hover:text-[#0075c4] uppercase ${lato.className} font-bold`}>About</Link>
+  <Link href={'/contact'} className={`text-white text-[13px] hover:text-[#0075c4] uppercase ${lato.className} font-bold`}>Contact Us</Link>
+</div>
 
-        {/* Mobile Menu */}
-        <div className='lg:hidden relative'>
-          <button onClick={toggleMenu} className='bg-black p-3 rounded'>
-            <RxDropdownMenu className='text-white h-5 w-5' />
-          </button>
+{/* Cart + Account (NO CHANGE) */}
+<div className='flex items-center w-[43%] lg:w-[10%] px-2 gap-2 justify-end'>
+  <Link href={'/cart'} className={`text-white text-[13px] uppercase hover:text-[#0075c4] ${lato.className} font-bold flex items-center gap-1`}>
+    ₨ {totalAmount} <FaBagShopping className='h-5 w-5' />
+  </Link>
+  <button 
+    onClick={handleAccountClick}
+    className={`text-white text-[13px] uppercase hover:text-[#0075c4] ${lato.className} font-bold hidden lg:flex`}
+  >
+    <FaUser className='h-5 w-5' />
+  </button>
+</div>
 
-          {menuOpen && (
-            <div className='absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg z-50'>
-              <Link href={'/everything'} className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>Everything</Link>
-              <Link href={'/category/women'} className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>Women</Link>
-              <Link href={'/category/men'} className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>Men</Link>
-              <Link href={'/category/accessories'} className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>Accessories</Link>
-              <hr className='my-1' />
-              <Link href={'/about'} className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>About</Link>
-              <Link href={'/contact'} className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>Contact</Link>
-              <Link href={'/cart'} className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>Cart</Link>
-              {/* Dynamic Login/Dashboard Button */}
-              <button
-                onClick={handleAccountClick}
-                className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
-              >
-                {isLoggedIn ? "Dashboard" : "Login"}
-              </button>
-            </div>
-          )}
-        </div>
+{/* Mobile Menu */}
+<div className='lg:hidden relative'>
+  <button onClick={toggleMenu} className='bg-black p-3 rounded'>
+    <RxDropdownMenu className='text-white h-5 w-5' />
+  </button>
+
+  {menuOpen && (
+    <div className='absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg z-50'>
+      <Link href="/everything" className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>
+        Everything
+      </Link>
+
+      {categories.map((cat) => (
+        <Link
+          key={cat._id}
+          href={`/everything?category=${encodeURIComponent(cat.name)}`}
+          className='block px-4 py-2 text-gray-800 hover:bg-gray-100'
+        >
+          {cat.name}
+        </Link>
+      ))}
+
+      <hr className='my-1' />
+      <Link href={'/about'} className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>About</Link>
+      <Link href={'/contact'} className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>Contact</Link>
+      <Link href={'/cart'} className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>Cart</Link>
+
+      <button
+        onClick={handleAccountClick}
+        className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
+      >
+        {isLoggedIn ? "Dashboard" : "Login"}
+      </button>
+    </div>
+  )}
+</div>
+
       </div>
     </div>
   )

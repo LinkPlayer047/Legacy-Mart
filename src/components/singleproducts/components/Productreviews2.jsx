@@ -30,9 +30,9 @@ const Productreviews2 = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`/api/products/${initialData._id}`);
+        const res = await axios.get(`/api/products/${id}`);
         setProduct(res.data);
-        setMainImage(res.data.images?.[0]);
+        setMainImage(res.data.images?.[0]?.url);
         setSelectedColor(res.data.colors?.[0]?.hex || null);
       } catch (err) {
         console.error(err);
@@ -110,7 +110,7 @@ const Productreviews2 = () => {
                 }`}
               >
                 <img
-                  src={img}
+                  src={img.url}
                   alt={`thumb-${i}`}
                   className="w-50 h-40 object-cover"
                 />
@@ -157,7 +157,7 @@ const Productreviews2 = () => {
               ≪
             </button>
             <img
-              src={product?.images[currentIndex]}
+              src={product?.images[currentIndex]?.url}
               alt="Zoomed"
               className={`transition-all duration-500 rounded-xl ${
                 fullscreen

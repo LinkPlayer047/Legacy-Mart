@@ -4,7 +4,9 @@ import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import { Lato } from "next/font/google";
 import { toast } from "react-toastify";
-import axios from "axios"; // ensure axios is installed
+import axios from "axios"; 
+import { useSearchParams } from 'next/navigation';
+
 
 const lato = Lato({ subsets: ["latin"], weight: ["700"] });
 
@@ -16,11 +18,29 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [priceRange, setPriceRange] = useState([500, 5000]);
-  const [appliedFilters, setAppliedFilters] = useState(null);
+  const [appliedFilters, setAppliedFilters] = useState({
+  category: 'All',
+  search: '',
+  priceRange: [500, 5000],
+  sort: 'newest'
+});
+  const searchParams = useSearchParams();
+  const categoryFromURL = searchParams.get('category') || 'All';
+
 
   const PAGE_SIZE = 12;
 
   // Fetch products from backend
+  useEffect(() => {
+  setSelectedCategory(categoryFromURL);
+  setAppliedFilters(prev => ({
+    ...prev,
+    category: categoryFromURL
+  }));
+  setCurrentPage(1);
+}, [categoryFromURL]);
+
+
   useEffect(() => {
     axios
       .get("/api/products") // replace with your backend endpoint if different
@@ -43,12 +63,14 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
   // Add to cart
   const addToCart = (product) => {
     const updatedCart = [...cartItems];
-    const existingItem = updatedCart.find((item) => item.id === product.id);
+    const existingItem = updatedCart.find(
+  (item) => item._id === product._id
+);
 
     if (existingItem) {
       existingItem.quantity += 1;
     } else {
-      updatedCart.push({ ...product, quantity: 1 });
+      updatedCart.push({ ...product, _id: product._id, quantity: 1 });
     }
 
     setCartItems(updatedCart);
@@ -72,7 +94,7 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
     let list = [...products];
     if (!appliedFilters) return list;
 
-    const { category, search, priceRange: pr, sort } = appliedFilters;
+    const { category, search, priceRange: pr, sort } = appliedFilters || {};
 
     if (category !== "All") list = list.filter((p) => p.category === category);
     list = list.filter((p) => p.price >= pr[0] && p.price <= pr[1]);
@@ -82,7 +104,8 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
         p.name.toLowerCase().includes(search.toLowerCase())
       );
 
-    if (sort === "newest") list.sort((a, b) => b.id - a.id);
+    if (sort === "newest")
+  list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     if (sort === "name-asc") list.sort((a, b) => a.name.localeCompare(b.name));
     if (sort === "price-asc") list.sort((a, b) => a.price - b.price);
     if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
@@ -244,10 +267,10 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {currentPageProducts.map((product) => (
                 <article
-                  key={product.id}
+                  key={product._id}
                   className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition"
                 >
-                  <Link href={`/singleproduct/${product.id}`}>
+                  <Link href={`/singleproduct/${product._id}`}>
                     <div className="relative w-full h-64 cursor-pointer">
                       <img
                         src={product.images?.[0]?.url || "/placeholder.png"}
@@ -257,7 +280,7 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
                     </div>
                   </Link>
                   <div className="p-4 text-center">
-                    <Link href={`/singleproduct/${product.id}`}>
+                    <Link href={`/singleproduct/${product._id}`}>
                       <h3 className="text-[16px] font-semibold text-gray-800 mb-2 hover:text-[#0084d6] transition">
                         {product.name}
                       </h3>
