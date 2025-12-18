@@ -102,7 +102,7 @@ const Productreviews2 = () => {
             {product?.images?.map((img, i) => (
               <button
                 key={i}
-                onClick={() => setMainImage(img)}
+                onClick={() => setMainImage(img.url)}
                 className={`border overflow-hidden ${
                   mainImage === img
                     ? "border-red-500"

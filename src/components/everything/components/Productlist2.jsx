@@ -9,6 +9,7 @@ import axios from "axios";
 import { useSearchParams } from 'next/navigation';
 
 
+
 const lato = Lato({ subsets: ["latin"], weight: ["700"] });
 
 const Productlist2 = ({ pageTitle = "Our Products" }) => {
@@ -25,13 +26,14 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
   priceRange: [500, 5000],
   sort: 'newest'
 });
+  const searchParams = useSearchParams(); // move inside useEffect
+
 
 
   const PAGE_SIZE = 12;
 
   // Fetch products from backend
   useEffect(() => {
-  const searchParams = useSearchParams(); // move inside useEffect
   const categoryFromURL = searchParams.get('category') || 'All';
 
   setSelectedCategory(categoryFromURL);
