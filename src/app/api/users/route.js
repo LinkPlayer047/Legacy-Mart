@@ -1,33 +1,29 @@
 import connectToDB from "@/lib/db";
 import User from "@/models/user";
-import { getUserFromToken } from "@/lib/adminauth";
+import { getAdminFromToken } from "@/lib/adminauth";
 import { corsHeaders } from "@/lib/cors";
 
-// ✅ OPTIONS handler (VERY IMPORTANT)
 export async function OPTIONS() {
-  return new Response(null, {
-    status: 204,
-    headers: corsHeaders,
-  });
+  return new Response(null, { status: 204, headers: corsHeaders });
 }
 
 export async function GET(req) {
   await connectToDB();
 
   const token = req.headers.get("authorization")?.split(" ")[1];
-  const admin = await getUserFromToken(token);
+  const admin = await getAdminFromToken(token);
 
-  if (!admin || admin.role !== "admin") {
-    return new Response("Unauthorized", {
-      status: 401,
-      headers: corsHeaders,
-    });
+  if (!admin) {
+    return new Response(
+      JSON.stringify({ message: "Unauthorized" }),
+      { status: 401, headers: corsHeaders }
+    );
   }
 
   const users = await User.find().select("-password -otp");
 
-  return new Response(JSON.stringify({ users }), {
-    status: 200,
-    headers: corsHeaders,
-  });
+  return new Response(
+    JSON.stringify({ users }),
+    { status: 200, headers: corsHeaders }
+  );
 }
