@@ -177,6 +177,7 @@ const Navbar = () => {
 
         {/* Menu Links */}
 <div className='lg:w-[55%] hidden lg:flex items-center gap-7 justify-start'>
+  <Link href={'/'} className={`text-white text-[14.4px] uppercase hover:text-[#0075c4] ${lato.className} font-bold`}>Home</Link>
   <Link
     href="/everything"
     className={`text-white text-[14.4px] uppercase hover:text-[#0075c4] ${lato.className} font-bold`}
@@ -222,6 +223,7 @@ const Navbar = () => {
 
   {menuOpen && (
     <div className='absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg z-50'>
+      <Link href={'/'} className={`text-white text-[14.4px] uppercase hover:text-[#0075c4] ${lato.className} font-bold`}>Home</Link>
       <Link href="/everything" className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>
         Everything
       </Link>
