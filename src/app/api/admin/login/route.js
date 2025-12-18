@@ -10,6 +10,7 @@ export async function OPTIONS() {
       "Access-Control-Allow-Origin": "https://legacy-mart-ap.vercel.app",
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      "Access-Control-Allow-Credentials": "true",
     },
   });
 }
@@ -24,6 +25,7 @@ export async function POST(req) {
       status: 401,
       headers: {
         "Access-Control-Allow-Origin": "https://legacy-mart-ap.vercel.app",
+        "Access-Control-Allow-Credentials": "true",
       },
     });
   }
@@ -34,6 +36,7 @@ export async function POST(req) {
       status: 401,
       headers: {
         "Access-Control-Allow-Origin": "https://legacy-mart-ap.vercel.app",
+        "Access-Control-Allow-Credentials": "true",
       },
     });
   }
@@ -48,6 +51,7 @@ export async function POST(req) {
     status: 200,
     headers: {
       "Access-Control-Allow-Origin": "https://legacy-mart-ap.vercel.app",
+      "Access-Control-Allow-Credentials": "true",
     },
   });
 }
