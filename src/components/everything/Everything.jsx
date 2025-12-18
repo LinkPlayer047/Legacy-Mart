@@ -1,14 +1,13 @@
-"use client"
-
-import React from 'react'
-import Productlist2 from './components/Productlist2'
+"use client";
+import React from "react";
+import Productlist2 from "./components/Productlist2";
 
 const Everything = () => {
   return (
     <div>
-        <Productlist2 />
+      <Productlist2 />
     </div>
-  )
-}
+  );
+};
 
-export default Everything
+export default Everything;

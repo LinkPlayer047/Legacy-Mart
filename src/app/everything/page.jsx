@@ -1,14 +1,11 @@
-'use client';
+"use client";
+import React, { Suspense } from "react";
+import Everything from "@/components/everything/Everything";
 
-import Everything from '@/components/everything/Everything'
-import React from 'react'
-
-const page = () => {
+export default function Page() {
   return (
-    <div>
-        <Everything />
-    </div>
-  )
+    <Suspense fallback={<div>Loading...</div>}>
+      <Everything />
+    </Suspense>
+  );
 }
-
-export default page
