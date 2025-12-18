@@ -1,6 +1,6 @@
 import connectToDB from "@/lib/db";
 import { Order } from "@/models/order";
-import { getUserFromToken } from "@/lib/adminauth";
+import { getAdminFromToken } from "@/lib/adminauth";
 import { corsHeaders } from "@/lib/cors";
 
 export async function PATCH(req) {
@@ -8,7 +8,7 @@ export async function PATCH(req) {
     await connectToDB();
 
     const token = req.headers.get("authorization")?.split(" ")[1];
-    const user = await getUserFromToken(token);
+    const user = await getAdminFromToken(token);
 
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {

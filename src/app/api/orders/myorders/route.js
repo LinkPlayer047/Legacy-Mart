@@ -1,6 +1,6 @@
 import connectToDB from "@/lib/db";
 import { Order } from "@/models/order";
-import { getUserFromToken } from "@/lib/adminauth";
+import { getAdminFromToken } from "@/lib/adminauth";
 import { corsHeaders } from "@/lib/cors";
 
 export async function GET(req) {
@@ -18,7 +18,7 @@ export async function GET(req) {
         headers: corsHeaders,
       });
 
-    const user = await getUserFromToken(token);
+    const user = await getAdminFromToken(token);
     if (!user)
       return new Response(JSON.stringify({ error: "Invalid token" }), {
         status: 401,
