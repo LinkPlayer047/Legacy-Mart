@@ -3,12 +3,15 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { login } from "../../../../userSlice";
 
 const Loginform = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -21,8 +24,9 @@ const Loginform = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        localStorage.setItem("token", data.token); // ✅ Store JWT
+        localStorage.setItem("token", data.token);
         localStorage.setItem("isLoggedIn", "true"); 
+        dispatch(login({ token: data.token, userInfo: data.user }));
         toast.success("Login successful!");
         router.push("/dashboard");
       } else {

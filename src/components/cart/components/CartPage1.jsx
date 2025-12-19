@@ -131,3 +131,107 @@ const CartPage1 = () => {
 };
 
 export default CartPage1;
+
+
+// "use client";
+
+// import React from "react";
+// import { useSelector, useDispatch } from "react-redux";
+// import {
+//   removeFromCart,
+//   increaseQuantity,
+//   decreaseQuantity,
+// } from "../../../../cartSlice"; 
+
+// const CartPage1 = () => {
+//   const dispatch = useDispatch();
+//   const cartItems = useSelector((state) => state.cart.items);
+
+//   // Calculate total dynamically from Redux store
+//   const total = cartItems.reduce(
+//     (acc, item) => acc + item.price * item.quantity,
+//     0
+//   );
+
+//   // Actions now use _id (unique identifier)
+//   const handleRemove = (_id) => dispatch(removeFromCart(_id));
+//   const handleIncrease = (_id) => dispatch(increaseQuantity(_id));
+//   const handleDecrease = (_id) => dispatch(decreaseQuantity(_id));
+
+//   return (
+//     <div className="bg-[#f5f7f9] py-20 pt-40 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+//       <div className="mycontainer flex flex-col md:flex-row items-start gap-5 w-full max-w-6xl">
+//         {/* Cart Items Section */}
+//         <div className="w-full md:w-2/3 bg-white shadow-lg rounded-xl py-5 px-6 md:px-10">
+//           <div className="flex items-center justify-between px-0 md:px-0">
+//             <h1 className="text-2xl font-bold">Your Cart</h1>
+//             <h1 className="text-2xl font-bold">₨ {total.toFixed(2)}</h1>
+//           </div>
+
+//           <div className="mt-5">
+//             {cartItems.length === 0 ? (
+//               <p className="text-gray-500 text-center py-10">
+//                 Your cart is empty 🛒
+//               </p>
+//             ) : (
+//               cartItems.map((item) => (
+//                 <div
+//                   key={item._id}
+//                   className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b py-4"
+//                 >
+//                   <div>
+//                     <h2 className="font-semibold">{item.name}</h2>
+//                     <p className="text-sm text-gray-500">{item.category}</p>
+//                     <div className="flex items-center gap-2 mt-2">
+//                       <button
+//                         onClick={() => handleDecrease(item._id)}
+//                         className="px-3 py-1 border rounded"
+//                         disabled={item.quantity <= 1}
+//                       >
+//                         -
+//                       </button>
+//                       <span>{item.quantity}</span>
+//                       <button
+//                         onClick={() => handleIncrease(item._id)}
+//                         className="px-3 py-1 border rounded"
+//                       >
+//                         +
+//                       </button>
+//                     </div>
+//                   </div>
+
+//                   <div className="flex flex-col items-start sm:items-end mt-3 sm:mt-0">
+//                     <p className="font-semibold">
+//                       ₨ {(item.price * item.quantity).toFixed(2)}
+//                     </p>
+//                     <button
+//                       onClick={() => handleRemove(item._id)}
+//                       className="text-red-500 text-sm mt-1 hover:underline"
+//                     >
+//                       Remove
+//                     </button>
+//                   </div>
+//                 </div>
+//               ))
+//             )}
+//           </div>
+//         </div>
+
+//         {/* Order Summary Section */}
+//         <div className="w-full md:w-1/3 bg-white shadow-lg rounded-xl py-5 px-6 mt-6 md:mt-0">
+//           <h2 className="text-xl font-bold mb-4">Order Summary</h2>
+//           <div className="flex justify-between mb-2">
+//             <p>Subtotal:</p>
+//             <p>₨ {total.toFixed(2)}</p>
+//           </div>
+//           <button className="w-full bg-black text-white py-2 mt-4 rounded hover:bg-[#0075c4] transition-colors">
+//             Proceed to Checkout
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default CartPage1;
+
