@@ -26,7 +26,6 @@ const Productreviews2 = () => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
 
-  // Fetch product data from API
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -69,7 +68,6 @@ const Productreviews2 = () => {
   return (
     <div className="py-20 bg-white">
       <div className="mycontainer2 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* LEFT SIDE: Image Section */}
         <div className="space-y-3">
           <div
             className="relative w-full overflow-hidden"
@@ -97,7 +95,6 @@ const Productreviews2 = () => {
             </button>
           </div>
 
-          {/* Thumbnails */}
           <div className="flex mt-5 gap-2 justify-start">
             {product?.images?.map((img, i) => (
               <button
@@ -119,7 +116,6 @@ const Productreviews2 = () => {
           </div>
         </div>
 
-        {/* LIGHTBOX */}
         {isLightboxOpen && (
           <div
             className={`fixed inset-0 flex items-center justify-center z-50 transition-all duration-300 ${
@@ -178,9 +174,7 @@ const Productreviews2 = () => {
           </div>
         )}
 
-        {/* RIGHT SIDE: Product Details */}
         <div className="space-y-4">
-          {/* Breadcrumb */}
           <div className="text-gray-500 text-md flex flex-wrap gap-1 items-center">
             <span
               onClick={() => router.push("/everything")}
@@ -208,13 +202,10 @@ const Productreviews2 = () => {
 
           <p className="text-gray-500 leading-relaxed">{product?.description}</p>
 
-          {/* Add to Cart Section */}
-          {/* Add to Cart Section */}
 <div className="mt-6 border-b border-gray-300 pb-7">
   <p className="text-2xl font-bold mb-3">₨ {product.price}.00</p>
 
   <div className="flex items-center gap-3">
-    {/* Quantity Selector */}
     <div className="flex border border-gray-300">
       <button
         className="px-3 py-2 text-xl"
@@ -233,7 +224,6 @@ const Productreviews2 = () => {
       </button>
     </div>
 
-    {/* Add to Cart Button */}
     <button
   onClick={() => {
     const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
@@ -277,7 +267,6 @@ const Productreviews2 = () => {
         </div>
       </div>
 
-      {/* Tabs Section */}
       <div className="mycontainer py-10">
         <div className="border-t border-gray-300 flex gap-6 overflow-x-auto">
           {["description", "additional", "reviews"].map((tab) => (
@@ -336,7 +325,6 @@ const Productreviews2 = () => {
                 Be the first to review “{product.title}”
               </h3>
 
-              {/* Rating */}
               <div className="flex gap-2 mb-4">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <span

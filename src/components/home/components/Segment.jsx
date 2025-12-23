@@ -8,7 +8,6 @@ const Segment = () => {
   return (
     <div className={`mycontainer2 flex flex-col lg:flex-row gap-5 py-10 ${lato.className}`}>
       
-      {/* WOMEN */}
       <div
         className="relative w-full lg:w-1/3 h-[400px] bg-cover bg-center rounded-lg overflow-hidden"
         style={{ backgroundImage: "url('/women.jpg')" }}
@@ -28,7 +27,6 @@ const Segment = () => {
         </div>
       </div>
 
-      {/* MEN */}
       <div
         className="relative w-full lg:w-1/3 h-[400px] bg-cover bg-center rounded-lg overflow-hidden"
         style={{ backgroundImage: "url('/men.jpg')" }}
@@ -48,7 +46,6 @@ const Segment = () => {
         </div>
       </div>
 
-      {/* ACCESSORIES */}
       <div
         className="relative w-full lg:w-1/3 h-[400px] bg-cover bg-center rounded-lg overflow-hidden"
         style={{ backgroundImage: "url('/footwear.jpg')" }}

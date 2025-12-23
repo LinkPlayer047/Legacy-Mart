@@ -21,7 +21,7 @@ const ProfileForm = ({ user, token, setUser }) => {
       const data = await res.json();
       if (res.ok) {
         toast.success("Profile updated successfully!");
-        setUser(data.user); // Update parent state
+        setUser(data.user);
       } else {
         toast.error(data.error || "Update failed");
       }

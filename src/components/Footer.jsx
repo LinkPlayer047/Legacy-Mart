@@ -14,7 +14,6 @@ const Footer = () => {
       const loggedIn = localStorage.getItem("isLoggedIn") === "true";
       setIsLoggedIn(loggedIn);
   
-      // Listen for changes in localStorage from other tabs
       const checkLogin = () => {
         setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
       };
@@ -23,7 +22,6 @@ const Footer = () => {
       return () => window.removeEventListener("storage", checkLogin);
     }, []);
   
-    // Account icon click
     const handleAccountClick = () => {
       const loggedIn = localStorage.getItem("isLoggedIn") === "true";
       if (loggedIn) {
@@ -35,11 +33,9 @@ const Footer = () => {
 
   return (
     <div>
-      {/* Top Section */}
       <div className="bg-[#FFFFFF] border-b border-gray-200 pt-10">
         <div className="mycontainer2 py-10 grid grid-cols-2 md:grid-cols-4 gap-10 items-start">
           
-          {/* Quick Links */}
           <div className="flex flex-col gap-3">
             <h1 className={`${lato.className} font-bold text-[20px]`}>
               Quick Links
@@ -58,7 +54,6 @@ const Footer = () => {
             <Link href="/contact" className="text-[16px] font-semibold hover:text-blue-700">Contact</Link>
           </div>
 
-          {/* For Her */}
           <div className="flex flex-col gap-3">
             <h1 className={`${lato.className} font-bold text-[20px]`}>
               For Her
@@ -70,7 +65,6 @@ const Footer = () => {
             <Link href="/" className="text-[16px] font-semibold hover:text-blue-700">Women Accessories</Link>
           </div>
 
-          {/* For Him */}
           <div className="flex flex-col gap-3">
             <h1 className={`${lato.className} font-bold text-[20px]`}>
               For Him
@@ -82,7 +76,6 @@ const Footer = () => {
             <Link href="/" className="text-[16px] font-semibold hover:text-blue-700">Men Jackets</Link>
           </div>
 
-          {/* Extras */}
           <div className="flex flex-col gap-3">
             <h1 className={`${lato.className} font-bold text-[20px]`}>
               Extras
@@ -97,7 +90,6 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom Section */}
       <div className="mycontainer2 flex flex-col md:flex-row items-center justify-between py-5 mt-10">
         <h2 className="text-gray-600 text-sm md:text-base">
           © 2025 Legacy Mart. All rights reserved.

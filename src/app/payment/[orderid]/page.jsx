@@ -23,7 +23,6 @@ export default function PaymentPage() {
           }
         );
 
-        // Redirect to Stripe
         window.location.href = res.data.url;
       } catch (err) {
         alert("Payment initiation failed");

@@ -14,7 +14,7 @@ const Hero = () => {
           if (entry.isIntersecting) {
             entry.target.classList.add("visible");
           } else {
-            entry.target.classList.remove("visible"); // for fade-out
+            entry.target.classList.remove("visible"); 
           }
         });
       },
@@ -35,7 +35,6 @@ const Hero = () => {
       <div className="mycontainer2 relative z-10 flex flex-col justify-center items-start min-h-screen">
         <div className="lg:w-1/2 w-full flex flex-col items-center text-center lg:text-left lg:items-start justify-center">
           
-          {/* ✅ Fade-in text */}
           <h1
             className={`fade-in text-white text-[30px] lg:text-[66px] font-semibold leading-tight ${lato.className}`}
           >

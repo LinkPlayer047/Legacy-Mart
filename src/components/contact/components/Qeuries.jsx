@@ -49,7 +49,6 @@ const Qeuries = () => {
       className={`w-full bg-[#f5f7f9] py-20 flex justify-center ${lato.className}`}
     >
       <div className="mycontainer mx-auto flex flex-col items-center">
-        {/* Section Header */}
         <div className="text-center">
           <h3 className="text-[16px] md:text-[18px] font-semibold text-black">
             Have any queries?
@@ -60,7 +59,6 @@ const Qeuries = () => {
           <div className="border-b-2 border-black mt-3 w-[60px] mx-auto"></div>
         </div>
 
-        {/* 4 Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10 w-full">
           {[
             { title: "Sales", info: "+1 234 567" },
@@ -85,9 +83,7 @@ const Qeuries = () => {
           ))}
         </div>
 
-        {/* Contact Section */}
         <div className="flex flex-col md:flex-row items-start justify-between gap-10 py-20 w-full">
-          {/* Left Text */}
           <div className="w-full md:w-1/2">
             <p className="text-[15px] text-gray-700">Don't be a stranger!</p>
             <h2 className="text-[30px] md:text-[42px] font-semibold text-black mt-1">
@@ -100,7 +96,6 @@ const Qeuries = () => {
             </p>
           </div>
 
-          {/* Right Form */}
           <form
             onSubmit={handleSubmit}
             className="bg-white rounded-lg shadow-lg p-8 md:p-10 flex flex-col gap-5 w-full md:w-1/2"

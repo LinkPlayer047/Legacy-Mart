@@ -13,7 +13,6 @@ import {
 } from "react-icons/fi";
 import ProfileForm from "./components/ProfileForm";
 
-// Dummy components for SPA switching
 const DashboardSummary = ({ totalOrders, pendingOrders, revenue, totalWishlist, totalCartItems, orders }) => (
   <>
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
@@ -58,7 +57,6 @@ const DashboardSummary = ({ totalOrders, pendingOrders, revenue, totalWishlist, 
       </div>
     </div>
 
-    {/* Recent activities */}
     <div className="mt-10 bg-white p-6 rounded-lg shadow">
       <h2 className="text-2xl font-semibold mb-4">Recent Activities</h2>
       <ul className="divide-y divide-gray-200">
@@ -235,7 +233,6 @@ const fetchUser = async (token) => {
 
   return (
     <div className="flex pt-30 min-h-screen bg-gray-100 relative">
-      {/* Sidebar */}
       <aside
         className={`fixed md:static top-0 left-0 h-full w-64 bg-white shadow-md flex flex-col transition-transform z-40
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
@@ -282,7 +279,6 @@ const fetchUser = async (token) => {
         </button>
       </aside>
 
-      {/* Sidebar backdrop for mobile */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 backdrop-blur-sm z-30 md:hidden"
@@ -290,7 +286,6 @@ const fetchUser = async (token) => {
         ></div>
       )}
 
-      {/* Main content */}
       <main className="flex-1 p-6 md:p-10 ml-0">
         <div className="flex items-center justify-between md:hidden mb-6">
           <h1 className="text-2xl font-bold">Welcome, {user.name}!</h1>
@@ -302,7 +297,6 @@ const fetchUser = async (token) => {
           </button>
         </div>
 
-        {/* Conditional rendering */}
         {activePage === "dashboard" && (
           <DashboardSummary
             totalOrders={totalOrders}

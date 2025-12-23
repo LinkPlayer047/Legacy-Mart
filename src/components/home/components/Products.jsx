@@ -11,12 +11,10 @@ export const lato = Lato({ subsets: ["latin"], weight: ["700"] });
 const Products = () => {
   const [products, setProducts] = useState([]);
 
-  // Fetch products from backend
   useEffect(() => {
     axios
       .get("/api/products")
       .then((res) => {
-        // sirf 2 rows (5 cols x 2 rows = 10 products)
         setProducts(res.data.slice(0, 10));
       })
       .catch((err) => console.error("Error fetching products:", err));
@@ -31,7 +29,6 @@ const Products = () => {
       </h1>
       <div className="border border-[#0084d6] w-[7%] mt-5 mb-10"></div>
 
-      {/* PRODUCTS GRID */}
       <div className="mycontainer grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
         {products.map((product) => (
           <Link
@@ -70,7 +67,6 @@ const Products = () => {
         ))}
       </div>
 
-      {/* VIEW ALL BUTTON */}
       <div className="mt-12">
         <Link
           href="/everything"

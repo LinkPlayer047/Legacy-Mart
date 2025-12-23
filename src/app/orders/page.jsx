@@ -7,7 +7,6 @@ const OrdersPage = () => {
   const [token, setToken] = useState(null);
 
   useEffect(() => {
-    // localStorage sirf client pe available hota hai
     if (typeof window !== "undefined") {
       const savedToken = localStorage.getItem("token");
       if (!savedToken) {
