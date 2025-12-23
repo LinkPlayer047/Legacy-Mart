@@ -9,35 +9,30 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export async function POST(req) {
   try {
     await connectToDB();
-
     const token = req.headers.get("authorization")?.split(" ")[1];
     const user = await getUserFromToken(token);
 
-    if (!user) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
+    if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const { orderId } = await req.json();
-
     const order = await Order.findById(orderId);
-    if (!order || order.user.toString() !== user._id.toString()) {
-      return NextResponse.json({ message: "Order not found" }, { status: 404 });
-    }
 
-    if (order.paymentStatus === "paid") {
+    if (!order || order.user.toString() !== user._id.toString())
+      return NextResponse.json({ message: "Order not found" }, { status: 404 });
+
+    if (order.paymentStatus === "paid")
       return NextResponse.json({ message: "Already paid" }, { status: 400 });
-    }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
-      customer_email: order.customer.email,
+      customer_email: user.email,
       line_items: [
         {
           price_data: {
             currency: "pkr",
             product_data: {
-              name: `Order ${order.orderNumber}`,
+              name: `Order ${order._id}`,
             },
             unit_amount: order.totalPrice * 100,
           },
@@ -47,8 +42,8 @@ export async function POST(req) {
       metadata: {
         orderId: order._id.toString(),
       },
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-success?orderId=${order._id}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout`,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard?paymentSuccess=true&orderId=${order._id}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard`,
     });
 
     return NextResponse.json({ url: session.url });

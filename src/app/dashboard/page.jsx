@@ -13,7 +13,7 @@ import {
 } from "react-icons/fi";
 import ProfileForm from "./components/ProfileForm";
 
-const DashboardSummary = ({ totalOrders, pendingOrders, revenue, totalWishlist, totalCartItems, orders }) => (
+const DashboardSummary = ({ totalOrders, pendingOrders, revenue, totalCartItems, orders }) => (
   <>
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
       <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
@@ -39,15 +39,7 @@ const DashboardSummary = ({ totalOrders, pendingOrders, revenue, totalWishlist, 
         </div>
         <p className="text-2xl font-bold">{pendingOrders}</p>
       </div>
-
-      <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">Wishlist Items</h3>
-          <FiHeart className="text-2xl text-[#0075be]" />
-        </div>
-        <p className="text-2xl font-bold">{totalWishlist}</p>
-      </div>
-
+     
       <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">Cart Items</h3>
@@ -92,19 +84,6 @@ const OrdersPage = ({ orders }) => (
   </div>
 );
 
-const WishlistPage = ({ wishlist }) => (
-  <div className="bg-white p-6 rounded-lg shadow">
-    <h2 className="text-2xl font-semibold mb-4">Your Wishlist</h2>
-    <ul className="divide-y divide-gray-200">
-      {wishlist.map((item, idx) => (
-        <li key={idx} className="py-3 flex justify-between items-center">
-          <span>{item.name}</span>
-          <button className="text-red-500 hover:underline">Remove</button>
-        </li>
-      ))}
-    </ul>
-  </div>
-);
 
 const CartPage = ({ cartItems }) => (
   <div className="bg-white p-6 rounded-lg shadow">
@@ -137,7 +116,6 @@ const Dashboard = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
-  const [wishlist, setWishlist] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activePage, setActivePage] = useState("dashboard");
@@ -150,7 +128,6 @@ const Dashboard = () => {
       router.push("/login");
     } else {
       fetchOrders(token);
-      fetchWishlist(token);
       fetchCart(token);
       fetchUser(token); 
     }
@@ -190,18 +167,6 @@ const fetchUser = async (token) => {
     }
   };
 
-  const fetchWishlist = async (token) => {
-    try {
-      const res = await fetch("/api/wishlist", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (res.ok) setWishlist(data.items);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const fetchCart = async (token) => {
   try {
     const res = await fetch("/api/cart", {
@@ -226,7 +191,6 @@ const fetchUser = async (token) => {
   const totalOrders = orders.length;
   const pendingOrders = orders.filter((o) => o.status === "pending").length;
   const revenue = orders.reduce((sum, o) => sum + o.totalPrice, 0);
-  const totalWishlist = wishlist.length;
   const totalCartItems = cartItems.length;
 
   console.log("🧠 CART ITEMS STATE:", cartItems);
@@ -255,10 +219,6 @@ const fetchUser = async (token) => {
           <button className="flex items-center gap-3 p-2 rounded hover:bg-gray-100"
             onClick={() => setActivePage("profile")}>
             <FiUser /> Profile
-          </button>
-          <button className="flex items-center gap-3 p-2 rounded hover:bg-gray-100"
-            onClick={() => setActivePage("wishlist")}>
-            <FiHeart /> Wishlist
           </button>
           <button className="flex items-center gap-3 p-2 rounded hover:bg-gray-100"
             onClick={() => setActivePage("cart")}>
@@ -302,13 +262,11 @@ const fetchUser = async (token) => {
             totalOrders={totalOrders}
             pendingOrders={pendingOrders}
             revenue={revenue}
-            totalWishlist={totalWishlist}
             totalCartItems={totalCartItems}
             orders={orders}
           />
         )}
         {activePage === "orders" && <OrdersPage orders={orders} />}
-        {activePage === "wishlist" && <WishlistPage wishlist={wishlist} />}
         {activePage === "cart" && <CartPage cartItems={cartItems} />}
         {activePage === "profile" && (
           <ProfileForm

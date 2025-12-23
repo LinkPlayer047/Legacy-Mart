@@ -78,8 +78,21 @@ export default function CheckoutPage() {
       }
 
       if (paymentMethod === "online") {
-        router.push(`/payment/${res.data.orderId}`);
-      }
+  try {
+    // 1️⃣ Call Stripe session API
+    const stripeRes = await axios.post(
+      "/api/payment/stripe",
+      { orderId: res.data.orderId },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    // 2️⃣ Redirect to Stripe checkout page
+    window.location.href = stripeRes.data.url;
+  } catch (err) {
+    console.error("Stripe payment failed:", err);
+    toast.error("Stripe payment failed. Try again!");
+  }
+}
     } catch (err) {
       console.error("Order failed:", err);
       toast.error("Order failed. Try again!");
