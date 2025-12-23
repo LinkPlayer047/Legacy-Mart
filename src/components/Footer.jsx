@@ -1,10 +1,38 @@
-import React from "react";
+"use client";
+
 import { Lato } from "next/font/google";
 import Link from "next/link";
+import React, { useEffect, useState } from 'react'
+
 
 export const lato = Lato({ subsets: ["latin"], weight: ["700"] });
 
 const Footer = () => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+      const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+      setIsLoggedIn(loggedIn);
+  
+      // Listen for changes in localStorage from other tabs
+      const checkLogin = () => {
+        setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+      };
+      window.addEventListener("storage", checkLogin);
+  
+      return () => window.removeEventListener("storage", checkLogin);
+    }, []);
+  
+    // Account icon click
+    const handleAccountClick = () => {
+      const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+      if (loggedIn) {
+        window.location.href = "/dashboard";
+      } else {
+        window.location.href = "/login";
+      }
+    };
+
   return (
     <div>
       {/* Top Section */}
@@ -18,7 +46,14 @@ const Footer = () => {
             </h1>
             <Link href="/" className="text-[16px] font-semibold hover:text-blue-700">Home</Link>
             <Link href="/about" className="text-[16px] font-semibold hover:text-blue-700">About</Link>
-            <Link href="/login" className="text-[16px] font-semibold hover:text-blue-700">My Account</Link>
+            <Link href="/login" className="text-[16px] font-semibold hover:text-blue-700">
+            <button 
+                onClick={handleAccountClick}
+                className={`text-black text-[16px] font-semibold hover:text-blue-700 ${lato.className}`}
+              >
+                My Account
+              </button>
+            </Link>
             <Link href="/cart" className="text-[16px] font-semibold hover:text-blue-700">Cart</Link>
             <Link href="/contact" className="text-[16px] font-semibold hover:text-blue-700">Contact</Link>
           </div>

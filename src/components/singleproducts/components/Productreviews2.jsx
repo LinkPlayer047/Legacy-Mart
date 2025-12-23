@@ -209,64 +209,71 @@ const Productreviews2 = () => {
           <p className="text-gray-500 leading-relaxed">{product?.description}</p>
 
           {/* Add to Cart Section */}
-          <div className="mt-6 border-b border-gray-300 pb-7">
-            <p className="text-2xl font-bold mb-3">₨ {product.price}.00</p>
+          {/* Add to Cart Section */}
+<div className="mt-6 border-b border-gray-300 pb-7">
+  <p className="text-2xl font-bold mb-3">₨ {product.price}.00</p>
 
-            <div className="flex items-center gap-3">
-              {/* Quantity Selector */}
-              <div className="flex border border-gray-300">
-                <button
-                  className="px-3 py-2 text-xl"
-                  onClick={() => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))}
-                >
-                  -
-                </button>
-                <span className="px-4 py-2 border border-gray-200 text-md">
-                  {quantity}
-                </span>
-                <button
-                  className="px-3 py-2 text-xl"
-                  onClick={() => setQuantity((prev) => prev + 1)}
-                >
-                  +
-                </button>
-              </div>
+  <div className="flex items-center gap-3">
+    {/* Quantity Selector */}
+    <div className="flex border border-gray-300">
+      <button
+        className="px-3 py-2 text-xl"
+        onClick={() => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))}
+      >
+        -
+      </button>
+      <span className="px-4 py-2 border border-gray-200 text-md">
+        {quantity}
+      </span>
+      <button
+        className="px-3 py-2 text-xl"
+        onClick={() => setQuantity((prev) => prev + 1)}
+      >
+        +
+      </button>
+    </div>
 
-              {/* Add to Cart Button */}
-              <button
-                onClick={() => {
-                  const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
-                  const existingItem = storedCart.find((item) => item.name === product.name);
+    {/* Add to Cart Button */}
+    <button
+  onClick={() => {
+    const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
 
-                  let updatedCart;
-                  if (existingItem) {
-                    updatedCart = storedCart.map((item) =>
-                      item.name === product.name
-                        ? { ...item, quantity: item.quantity + quantity }
-                        : item
-                    );
-                  } else {
-                    updatedCart = [
-                      ...storedCart,
-                      {
-                        name: product.name,
-                        price: product.price,
-                        category: product.category,
-                        image: product.image,
-                        quantity: quantity,
-                      },
-                    ];
-                  }
+    const cartProduct = {
+      _id: product._id,
+      title: product.title,
+      price: product.price,
+      category: product.category,
+      image: mainImage || product.images?.[0]?.url || "",
+      color: selectedColor || null,
+      size: selectedSize || null,
+    };
 
-                  localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-                  router.push("/cart");
-                }}
-                className="px-6 py-3 rounded-full text-white font-semibold transition bg-[#fc001d] hover:bg-[#e51931]"
-              >
-                ADD TO CART
-              </button>
-            </div>
-          </div>
+    const existingItemIndex = storedCart.findIndex(
+      (item) =>
+        item.product._id === cartProduct._id &&
+        item.product.color === cartProduct.color &&
+        item.product.size === cartProduct.size
+    );
+
+    let updatedCart;
+    if (existingItemIndex !== -1) {
+      storedCart[existingItemIndex].quantity += quantity;
+      updatedCart = [...storedCart];
+    } else {
+      updatedCart = [...storedCart, { product: cartProduct, quantity }];
+    }
+
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+
+    router.push("/cart");
+  }}
+  className="px-6 py-3 rounded-full text-white font-semibold transition bg-[#fc001d] hover:bg-[#e51931]"
+>
+  ADD TO CART
+</button>
+  </div>
+</div>
+
         </div>
       </div>
 

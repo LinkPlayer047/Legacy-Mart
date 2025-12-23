@@ -111,16 +111,29 @@ const WishlistPage = ({ wishlist }) => (
 const CartPage = ({ cartItems }) => (
   <div className="bg-white p-6 rounded-lg shadow">
     <h2 className="text-2xl font-semibold mb-4">Your Cart</h2>
-    <ul className="divide-y divide-gray-200">
-      {cartItems.map((item, idx) => (
-        <li key={idx} className="py-3 flex justify-between items-center">
-          <span>{item.name} x {item.quantity}</span>
-          <button className="text-red-500 hover:underline">Remove</button>
-        </li>
-      ))}
-    </ul>
+
+    {cartItems.length === 0 ? (
+      <p>No items in cart</p>
+    ) : (
+      <ul className="divide-y divide-gray-200">
+        {cartItems.map((item) => (
+          <li
+            key={item.product._id}
+            className="py-3 flex justify-between items-center"
+          >
+            <span>
+              {item.product.name} × {item.quantity}
+            </span>
+            <span>
+              ₨ {item.product.price * item.quantity}
+            </span>
+          </li>
+        ))}
+      </ul>
+    )}
   </div>
 );
+
 
 const Dashboard = () => {
   const router = useRouter();
@@ -132,21 +145,40 @@ const Dashboard = () => {
   const [activePage, setActivePage] = useState("dashboard");
 
   useEffect(() => {
-    // Browser-only check
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("Please login first!");
-        router.push("/login");
-      } else {
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        setUser(payload);
-        fetchOrders(token);
-        fetchWishlist(token);
-        fetchCart(token);
-      }
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please login first!");
+      router.push("/login");
+    } else {
+      fetchOrders(token);
+      fetchWishlist(token);
+      fetchCart(token);
+      fetchUser(token); 
     }
-  }, [router]);
+  }
+}, [router]);
+
+const fetchUser = async (token) => {
+  try {
+    const res = await fetch("/api/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      setUser(data);
+    } else {
+      router.push("/login");
+    }
+  } catch (err) {
+    console.error(err);
+    router.push("/login");
+  }
+};
+
 
   const fetchOrders = async (token) => {
     try {
@@ -173,16 +205,23 @@ const Dashboard = () => {
   };
 
   const fetchCart = async (token) => {
-    try {
-      const res = await fetch("/api/cart", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (res.ok) setCartItems(data.items);
-    } catch (err) {
-      console.error(err);
+  try {
+    const res = await fetch("/api/cart", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = await res.json();
+
+    console.log("🛒 CART API RESPONSE:", data);
+
+    if (res.ok) {
+      setCartItems(data.items);
     }
-  };
+  } catch (err) {
+    console.error("❌ Cart fetch error:", err);
+  }
+};
+
 
   if (!user) return null;
 
@@ -191,6 +230,8 @@ const Dashboard = () => {
   const revenue = orders.reduce((sum, o) => sum + o.totalPrice, 0);
   const totalWishlist = wishlist.length;
   const totalCartItems = cartItems.length;
+
+  console.log("🧠 CART ITEMS STATE:", cartItems);
 
   return (
     <div className="flex pt-30 min-h-screen bg-gray-100 relative">

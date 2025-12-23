@@ -9,8 +9,10 @@ export async function getUserFromToken(token) {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return await User.findById(decoded.id);
-  } catch {
+    const userId = decoded.id || decoded._id; 
+    return await User.findById(userId);
+  } catch (err) {
+    console.error("Auth token error:", err);
     return null;
   }
 }

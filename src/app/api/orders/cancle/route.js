@@ -1,5 +1,5 @@
 import connectToDB from "@/lib/db";
-import { Order } from "@/models/order";
+import { order } from "@/models/order";
 import { getAdminFromToken } from "@/lib/adminauth";
 import { corsHeaders } from "@/lib/cors";
 
