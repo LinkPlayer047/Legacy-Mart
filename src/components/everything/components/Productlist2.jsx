@@ -31,6 +31,19 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
 
   const PAGE_SIZE = 12;
 
+  // --- NEW: Read category from URL ---
+  const searchParams = useSearchParams();
+  const categoryFromUrl = searchParams.get("category") || "All";
+
+  useEffect(() => {
+    setSelectedCategory(categoryFromUrl);
+    setAppliedFilters((prev) => ({
+      ...prev,
+      category: categoryFromUrl,
+    }));
+    setCurrentPage(1);
+  }, [categoryFromUrl]);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -141,6 +154,7 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
       <div
         className={`max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-start justify-between gap-10 px-5 ${lato.className}`}
       >
+        {/* Sidebar */}
         <aside className="lg:w-[30%] w-full bg-white rounded-lg shadow-md p-6">
           <div className="flex items-center w-full border border-gray-300 rounded overflow-hidden mb-6">
             <input
@@ -158,6 +172,7 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
             </button>
           </div>
 
+          {/* Price Filter */}
           <div className="pt-6 w-full">
             <h2 className="text-[22px] mb-4 text-gray-800">Filter by Price</h2>
             <div className="flex gap-2 mb-2">
@@ -204,6 +219,7 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
             </button>
           </div>
 
+          {/* Categories */}
           <div className="pt-8">
             <h1 className="text-[22px] mb-4 font-semibold text-gray-800">
               Categories
@@ -213,8 +229,8 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
                 <button
                   key={cat}
                   onClick={() => {
-                    setSelectedCategory(cat);
-                    applyFilter();
+                    // Update URL and state for sidebar clicks
+                    router.push(`/everything?category=${encodeURIComponent(cat)}`);
                   }}
                   className={`text-left px-3 py-2 rounded ${
                     selectedCategory === cat
@@ -236,7 +252,9 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
           </div>
         </aside>
 
+        {/* Main Products */}
         <main className="lg:w-[70%] w-full">
+          {/* Header & Sorting */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <h2 className="text-[26px] font-semibold text-gray-900">
               {pageTitle}
@@ -259,6 +277,7 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
             </div>
           </div>
 
+          {/* Products Grid */}
           {currentPageProducts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {currentPageProducts.map((product) => (
@@ -299,6 +318,7 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
             <p className="text-center text-gray-600 mt-10">No products found.</p>
           )}
 
+          {/* Pagination */}
           <div className="mt-8 flex items-center justify-between">
             <div className="text-sm text-gray-600">
               Showing{" "}

@@ -6,7 +6,9 @@ import { RxDropdownMenu } from "react-icons/rx";
 import { FaBagShopping } from "react-icons/fa6";
 import { FaUser } from "react-icons/fa";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setCart } from '../../cartSlice';
+import { useRouter } from 'next/navigation';
 
 export const lato = Lato({ subsets: ['latin'], weight: ['700'] })
 
@@ -14,22 +16,24 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [categories, setCategories] = useState([]);
-
   const toggleMenu = () => setMenuOpen(!menuOpen);
-
+  const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart.items || []);
+  const router = useRouter();
 
   const totalAmount = cartItems.reduce(
     (acc, item) => acc + ((item.product?.price || 0) * (item.quantity || 0)),
     0
   );
 
+  // Fetch categories
   useEffect(() => {
     axios.get("/api/category")
       .then(res => setCategories(res.data))
       .catch(console.error);
   }, []);
 
+  // Check login status
   useEffect(() => {
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
     setIsLoggedIn(loggedIn);
@@ -41,91 +45,94 @@ const Navbar = () => {
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
+  // Fetch cart on mount so totalAmount is always correct
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    axios.get("/api/cart", { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => dispatch(setCart(res.data)))
+      .catch(console.error);
+  }, [dispatch]);
+
   const handleAccountClick = () => {
     window.location.href = isLoggedIn ? "/dashboard" : "/login";
   };
 
+  const handleCategoryClick = (categoryName) => {
+    router.push(`/everything?category=${encodeURIComponent(categoryName)}`);
+  }
+
   return (
     <div className='w-full absolute z-20 flex items-center justify-center bg-[#146191]/30 py-10'>
-      <div className='mycontainer flex items-center justify-between'>
+      <div className='mycontainer flex items-center justify-between flex-wrap'>
 
-        <div className='lg:w-[10%] w-[40%] lg:flex items-center'>
+        {/* Logo */}
+        <div className='lg:w-[10%] w-[40%] flex items-center'>
           <img src="/Legacy-Logo_1.png" alt="Logo" className='h-10' />
         </div>
 
-        <div className='lg:w-[55%] hidden lg:flex items-center gap-7 justify-start'>
+        {/* Desktop Menu */}
+        <div className='lg:w-[55%] hidden lg:flex items-center gap-7 justify-start flex-wrap'>
           <Link href='/' className={`text-white text-[14.4px] uppercase hover:text-[#0075c4] ${lato.className} font-bold`}>Home</Link>
           <Link href="/everything" className={`text-white text-[14.4px] uppercase hover:text-[#0075c4] ${lato.className} font-bold`}>Everything</Link>
 
           {categories.map(cat => (
-            <Link
+            <button
               key={cat._id}
-              href={`/everything?category=${encodeURIComponent(cat.name)}`}
-              className={`text-white text-[14.4px] uppercase hover:text-[#0075c4] ${lato.className} font-bold`}
+              onClick={() => handleCategoryClick(cat.name)}
+              className={`text-white text-[14.4px] uppercase hover:text-[#0075c4] ${lato.className} font-bold bg-transparent border-none cursor-pointer`}
             >
               {cat.name}
-            </Link>
+            </button>
           ))}
         </div>
 
-        <div className='lg:w-[25%] hidden lg:flex items-center gap-7 justify-end'>
+        {/* Right Menu - Cart + Account + Links */}
+        <div className='lg:w-[35%] hidden lg:flex items-center justify-end gap-5 flex-wrap'>
           <Link href='/about' className={`text-white text-[13px] hover:text-[#0075c4] uppercase ${lato.className} font-bold`}>About</Link>
           <Link href='/contact' className={`text-white text-[13px] hover:text-[#0075c4] uppercase ${lato.className} font-bold`}>Contact Us</Link>
-        </div>
 
-        <div className='flex items-center w-[43%] lg:w-[10%] px-2 gap-2 justify-end'>
           <Link href='/cart' className={`text-white text-[13px] uppercase hover:text-[#0075c4] ${lato.className} font-bold flex items-center gap-1`}>
             ₨ {totalAmount} <FaBagShopping className='h-5 w-5' />
           </Link>
-          <button
-            onClick={handleAccountClick}
-            className={`text-white text-[13px] uppercase hover:text-[#0075c4] ${lato.className} font-bold hidden lg:flex`}
-          >
-            <FaUser className='h-5 w-5' />
-          </button>
+
+          <div className={`cursor-pointer text-white text-[14px] hover:text-[#0075c4] ${lato.className} font-bold flex items-center gap-1`} onClick={handleAccountClick}>
+            <FaUser className='w-5 h-5' /> Account
+          </div>
         </div>
 
-        <div className='lg:hidden relative'>
-          <button onClick={toggleMenu} className='bg-black p-3 rounded'>
-            <RxDropdownMenu className='text-white h-5 w-5' />
-          </button>
-
-          {menuOpen && (
-            <div className='absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg z-50'>
-              <Link href='/' className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>Home</Link>
-              <Link href="/everything" className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>Everything</Link>
-
-              {categories.map(cat => (
-                <Link
-                  key={cat._id}
-                  href={`/everything?category=${encodeURIComponent(cat.name)}`}
-                  className='block px-4 py-2 text-gray-800 hover:bg-gray-100'
-                >
-                  {cat.name}
-                </Link>
-              ))}
-
-              <hr className='my-1' />
-              <Link href='/about' className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>About</Link>
-              <Link href='/contact' className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>Contact</Link>
-              <Link href='/cart' className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>Cart</Link>
-
-              <button
-                onClick={handleAccountClick}
-                className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
-              >
-                {isLoggedIn ? "Dashboard" : "Login"}
-              </button>
-            </div>
-          )}
+        {/* Mobile Menu Toggle */}
+        <div className='lg:hidden flex justify-end w-[40%]'>
+          <RxDropdownMenu className='w-6 h-6 text-white' onClick={toggleMenu} />
         </div>
-
       </div>
+
+      {/* Mobile Dropdown */}
+      {menuOpen && (
+        <div className='lg:hidden absolute top-[80px] left-0 w-full bg-white shadow-lg flex flex-col items-start gap-5 p-5'>
+          <Link href='/' className={`text-black ${lato.className} font-bold`}>Home</Link>
+          <Link href="/everything" className={`text-black ${lato.className} font-bold`}>Everything</Link>
+          {categories.map(cat => (
+            <button
+              key={cat._id}
+              onClick={() => handleCategoryClick(cat.name)}
+              className={`text-black ${lato.className} font-bold bg-transparent border-none cursor-pointer`}
+            >
+              {cat.name}
+            </button>
+          ))}
+          <Link href='/about' className={`text-black ${lato.className} font-bold`}>About</Link>
+          <Link href='/contact' className={`text-black ${lato.className} font-bold`}>Contact Us</Link>
+          <Link href='/cart' className={`text-black ${lato.className} font-bold flex items-center gap-1`}>
+            ₨ {totalAmount} <FaBagShopping className='h-5 w-5' />
+          </Link>
+          <div className={`text-black ${lato.className} font-bold flex items-center gap-1`} onClick={handleAccountClick}>
+            <FaUser className='w-5 h-5' /> Account
+          </div>
+        </div>
+      )}
     </div>
-  )
+  );
 }
 
 export default Navbar;
-
-
-
