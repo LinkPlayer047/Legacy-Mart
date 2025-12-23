@@ -98,7 +98,7 @@ const Productlist2 = ({ pageTitle = "Our Products" }) => {
       toast.success(`${product.name} added to cart!`);
     } catch (err) {
       console.error(err);
-      toast.error("Failed to add product to cart");
+      toast.error("Please login first");
     }
   };
 
